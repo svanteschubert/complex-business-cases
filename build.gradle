@@ -1,0 +1,24 @@
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+	implementation 'org.kohsuke:github-api:1.113'
+	testImplementation(platform('org.junit:junit-bom:5.6.2'))
+	testImplementation('org.junit.jupiter:junit-jupiter')    
+}
+
+application {
+	mainClass = 'org.cen.tc434.issues.Csv2Github'
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+        showStandardStreams = true
+	}
+}
+
