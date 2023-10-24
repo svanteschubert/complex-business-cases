@@ -49,6 +49,7 @@ Threrefore, before the export:
 2. I exchanged all ' with äää
 3. I exchanged all ; with üüü
 4. The CVS created by LibreOffice contained many LineBreaks in the cells. I used UltraEdit to exchange the line breaks ^p after export with ööö.
+5. And exchanged the last cell containing ### with a linebreak (again using UltraEdit).
 
 I translated the German part of the CSV with https://www.deepl.com/translator.
 
