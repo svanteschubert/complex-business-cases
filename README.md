@@ -52,4 +52,4 @@ https://docs.github.com/de/get-started/writing-on-github/getting-started-with-wr
 
 ## Problem of Metadata (how to identify issues via labels)
 
-Another interesting topic/task is to label/sort the issues by categories/labels/"different view angles" I have overtaken the labels from CEN TC 434 (also editorial states) and added some sectors today from a presentation by Edmund Grey: https://github.com/svanteschubert/complex-business-cases/label
+Another interesting topic/task is to label/sort the issues by categories/labels/"different view angles" I have overtaken the labels from CEN TC 434 (also editorial states) and added some sectors today from a presentation by Edmund Gray: https://github.com/svanteschubert/complex-business-cases/label
