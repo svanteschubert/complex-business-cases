@@ -111,6 +111,9 @@ nb-configuration.xml
 # .idea/*.iml
 # .idea/modules
 
+# disable everything - don't like IDE specific parts - does not scale..
+.idea/
+
 # CMake
 cmake-build-*/
 
