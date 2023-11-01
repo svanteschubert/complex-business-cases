@@ -50,6 +50,22 @@ To add/change something just exchange the existing description:
 The formation is done by text markdown, which is quite straight forward:
 https://docs.github.com/de/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
 
+## Additional Inputs / Updates
+
+### Input from France 
+
+Cyrille was so kind to provide the latest update from France related to Factur-X:
+
+1. EN16931 extensions for B2B Mandate in France ([PDF document of 4 pages](https://github.com/svanteschubert/complex-business-cases/blob/main/docs/2023%2010%2023%20-%20Extension%20for%20France%20B2B%20Mandate.pdf))
+2. [Factur-X overview spreadsheet](https://github.com/svanteschubert/complex-business-cases/blob/main/docs/2023%2010%2023%20-%20EN16931%20EXTENDED%20CTC%20FR.xlsx) - extending the EN16931 semantic with 175 semantic entities in the first column (all starting with EXT-FR-FE) and some initial syntax-binding.
+
+### Update from Germany
+
+Daniel mentioned that there are two issues missing and will be added to our issue list:
+
+1. Split Payment
+2. Early Payment Discount
+
 ## Problem of Metadata (how to identify issues via labels)
 
 Another interesting topic/task is to label/sort the issues by categories/labels/"different view angles" I have overtaken the labels from CEN TC 434 (also editorial states) and added some sectors today from a presentation by Edmund Gray: https://github.com/svanteschubert/complex-business-cases/label
