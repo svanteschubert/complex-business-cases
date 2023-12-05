@@ -735,6 +735,10 @@ The steps in case 10 are :
 <tr><td colspan="1" valign="top">11</td><td colspan="1" valign="top">Receipt of "cashed" status</td><td colspan="1" valign="top">Buyer</td><td colspan="1" valign="top">Depending on the commercial offer of the PDP 2 platform, the customer may be informed of the "cashed" status.</td></tr>
 </table>
 
+
+
+
+
 1. <a name="_bookmark25"></a>**Case n°11 : Invoice with "Addressed to" (INVOICED) different from the buyer (BUYER)**
 
 This business case covers the case of a third party (e.g. a management company) managing a company's invoices and accounts. The invoice is made out in the name of the taxable buyer (whose transactions are covered by electronic invoicing), but addressed to a third party.
@@ -784,6 +788,9 @@ The steps in case 11 are :
 <tr><td colspan="1" valign="top">9b</td><td colspan="1" valign="top">Invoice collection information</td><td colspan="1" valign="top">Buyer</td><td colspan="1" valign="top">Buyer receives invoice collection information</td></tr>
 <tr><td colspan="1" valign="top">10</td><td colspan="1" valign="top"><p>Receiving <i>e-reporting</i> feeds</p><p>payment details</p></td><td colspan="1" valign="top">PPF</td><td colspan="1" valign="top"><p>The supplier's platform (PPF in the example) accordingly sends the flow</p><p><i>e-reporting</i> of payment for declaration to the tax authorities.</p></td></tr>
 </table>
+
+
+
 
 1. <a name="_bookmark27"></a>**Case n°12: Transparent intermediary handling invoices for its purchasing principal**
 
@@ -920,6 +927,9 @@ The business case steps are as follows:
 **Please note:** Both the subcontractor and the contractor must have an account on the public invoicing portal.
 
 
+
+
+
 1. <a name="_bookmark34"></a>**Case n° 14: Invoice to be paid by a third party (co-contracting)**
 
 
@@ -1015,7 +1025,13 @@ The business case steps are as follows:
 **Please note:** The co-contractor and agent must have an account on the public invoicing portal.
 
 
-1. <a name="_bookmark37"></a>**Case n°15 : Sales invoice following an order / payment from a third party on behalf of the BUYER**
+
+
+
+
+
+
+1. <a name="_bookmark37"></a>**Case n°15 : Sales invoice following an order / payment from a third party on behalf of the BUYER (media purchase, consultancy fees)**
 
 Business case n°15 covers the business case of an order placed by a third party on behalf of the buyer and the transmission of a sales invoice from the third party to the buyer, with identification of the third party.
 
@@ -1092,6 +1108,8 @@ Services offered by PPF :
 
 These invoices fall outside the scope of the e-invoicing reform. Their management is therefore outside the scope of the public invoicing portal, but they may nevertheless be handled by PDPs according to the procedures they have defined.
 
+
+
 1. <a name="_bookmark40"></a>**Case 17a: Invoice payable to a third-party payment intermediary (e.g. Marketplace)**
 
 ![](Aspose.Words.cdf5b729-81b0-43d7-896f-34c0dfd0a151.027.png)
@@ -1141,6 +1159,11 @@ The steps in case 17a are :
 <tr><td colspan="1" valign="top"><p></p><p>10</p></td><td colspan="1" valign="top"><p></p><p>Status update</p><p>"F2 "cashed in</p></td><td colspan="1" valign="top"><p></p><p>Payment intermediary</p></td><td colspan="1" valign="top"><p>The payment intermediary's PDP 1 transmits the payment data from the commission/intermediation invoice to the PPF.</p><p>Step 10 applies only to services, excluding the option</p><p>VAT on debits.</p></td></tr>
 </table>
 
+
+
+
+
+
 1. <a name="_bookmark42"></a>**Case 17b: Invoice payable to a third party, payment intermediary and billing mandate**
 
 ![](Aspose.Words.cdf5b729-81b0-43d7-896f-34c0dfd0a151.028.png)
@@ -1178,6 +1201,12 @@ The specific features of the life cycle or process are :
 <tr><td colspan="1" valign="top"><p></p><p>10</p></td><td colspan="1" valign="top"><p></p><p>F2 "cashed" status update</p></td><td colspan="1" valign="top"><p></p><p>Payment intermediary</p></td><td colspan="1" valign="top"><p>The payment intermediary's PDP 1 transmits the payment data to the PPF.</p><p>Step 10 only applies to services, excluding</p><p>VAT option on debits.</p></td></tr>
 </table>
 
+
+
+
+
+
+
 1. <a name="_bookmark44"></a>**Case 18: Debit note management**
 
 ### **Definition and principle :**
@@ -1199,6 +1228,13 @@ In these cases, the platform will transmit the assets :
 - A factoring credit
 - Self-billed credit factoring
 - A credit note for a down-payment invoice
+
+
+
+
+
+
+
 
 
 1. <a name="_bookmark45"></a>**Case 19a: Invoice issued with billing mandate**
@@ -1288,6 +1324,10 @@ The steps for case n°19a - option 2 are :
 <tr><td colspan="1" valign="top"><p></p><p>12</p></td><td colspan="1" valign="top"><p></p><p>Declaration	of	status</p><p>"of the invoice</p></td><td colspan="1" valign="top"><p></p><p>Supplier</p></td><td colspan="1" valign="top">As part of the service offer or billing mandate, the PDP2 can send the <i>e-reporting</i> flow. However, from a legal point of view, it is the supplier who is responsible for declaring the <i>e-reporting</i> flow.</td></tr>
 </table>
 
+
+
+
+
 1. <a name="_bookmark48"></a>**Case 19b: Self-billing**
 
 The invoice is issued by the buyer's platform.
@@ -1345,6 +1385,11 @@ The steps for case 19b are :
 <tr><td colspan="1" valign="top">8</td><td colspan="1" valign="top"><p>Go to	à	update	at	status</p><p>"cashed</p></td><td colspan="1" valign="top">Supplier</td></tr>
 <tr><td colspan="1" valign="top">9</td><td colspan="1" valign="top"><p>Reception	from	status</p><p>"cashed</p></td><td colspan="1" valign="top">Buyer	/ Agent</td></tr>
 </table>
+
+
+
+
+
 
 1. <a name="_bookmark50"></a>**Cases 20 and 21: Down-payment invoice and final invoice after down-payment**
 
@@ -1516,6 +1561,10 @@ There is an exception for sales of photovoltaic energy by private individuals fr
 
 
 
+
+
+
+
 1. <a name="_bookmark57"></a>**Case 24: Managing deposits**
 
 Deposits are defined as sums paid by way of forfeit (article 1590 of the French Civil Code): in this case, the buyer may cancel the sale, renouncing his purchase by forfeiting this sum. If the deposit is an indemnity, i*.e.* does not constitute payment for a service (absence of consideration), it is not included in the taxable base for VAT.
@@ -1525,6 +1574,11 @@ In commercial matters, sums paid in advance more often take the form of a deposi
 from which the parties cannot withdraw.
 
 Deposits are compensation for commercial loss, and are not subject to VAT; they are not covered by *e-invoicing* or *e-reporting*. It is advisable to specify the nature of this sum in the contract or receipt given to the buyer.
+
+
+
+
+
 
 1. <a name="_bookmark58"></a>**Case 25: Gift voucher and card management**
 
@@ -1593,6 +1647,12 @@ Commissions or management fees may be charged throughout the BUM marketing chain
 
 
 
+
+
+
+
+
+
 1. <a name="_bookmark61"></a>**Case 26: Invoices with contractual reserve clause**
 
 Case of invoices 95% paid by the customer with a contractual reserve clause generating a 5% withholding.
@@ -1614,6 +1674,22 @@ In the case of partial payment, only VAT on the amount collected will be due.
 The supplier must issue a credit note in the event of the retention of guarantee. In the absence of payment
 
 of the 5%, no *e-reporting of* payment of the remaining 5%.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 1. <a name="_bookmark62"></a>**Case 27: Managing toll tickets**
 
@@ -1704,6 +1780,10 @@ In the case of a single taxpayer :
 
 The business rules dedicated to the single taxable person are G1.76, G1.78, G1.79 and G1.52 (see Appendix 7).
 
+
+
+
+
 1. <a name="_bookmark68"></a>**Case n°30: VAT already collected - Transactions initially processed in B2C *e-reporting*, subject to *subsequent* invoicing**
 
 This case study illustrates the management of transactions between taxable persons subject to *e-invoicing* that have been recorded in a cash register software or system (B2C transaction).
@@ -1742,6 +1822,13 @@ The specificities of billing/transaction and payment data transmission are :
 - Transmission of invoice with "VAT already collected" billing frame (flow 2)
 
 The "VAT already collected" invoicing frame can be used in other situations, in particular for invoices to be issued when VAT has been declared by a company on its VAT return for the period due and the invoice is subsequently issued.
+
+
+
+
+
+
+
 
 1. <a name="_bookmark70"></a>**Case 31: "Mixed" invoices showing a main transaction and an accessory transaction**
 
