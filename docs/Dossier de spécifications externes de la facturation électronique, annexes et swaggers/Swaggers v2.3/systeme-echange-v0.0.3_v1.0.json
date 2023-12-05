@@ -1,0 +1,542 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "contact" : {
+      "email" : "api@contact.name",
+      "name" : "api@contact.name"
+    },
+    "description" : "### Avertissements\n- La publication des swaggers permet d'exposer de manière précise les interactions qui seront possibles à l'aide des API du PPF.\n- Il ne s'agit pas d'une version de production. Ces swaggers pourront être modifiés ultérieurement (méthodes, endpoints).\n- L'utilisation de ces swaggers sera possible dés lors qu'une application sera publiée sur PISTE, ce qui n'est pas le cas ce jour.\n---\n---\nL'API flux permet :\n >- de déposer un flux.\n >- de récupérer les informations d'un ensemble de flux.\n >- de récupérer les informations d'un flux à partir de son identifiant\n\nLes ressources de l'API sont :\n>- '/flux' : avec les méthodes de création d'un flux et de consultation du statut.\n\nExemple de cinématique d'appel pour créer une sollicitation:\n >- `POST /flux` : renseigner le nom de l'enveloppe de flux et son contenu\n >- `POST /flux/recherche` : rechercher des flux avec des critères multiples.\n >- `GET /flux/{id}` : récupérer un flux en fonction de son identifiant.\n",
+    "title" : "PPF api système d'échange",
+    "version" : "Incrément 2 - Specs Ext 2.2",
+    "x-api-id" : "8470066c-14a5-487f-b285-b6ba6fabff57",
+    "x-audience" : "external-public"
+  },
+  "externalDocs" : {
+    "description" : "Lien de téléchargement des spécifications externes du PPF v2.2",
+    "url" : "https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/specification_externes_b2b/version_2-2_du_31_01_2023/spec_facturation_electronique_v2.2_31-01-2023.zip"
+  },
+  "servers" : [ {
+    "url" : "https://{environment}aife.economie.gouv.fr/ppf/se/v1.0.0",
+    "variables" : {
+      "environment" : {
+        "default" : "env.dev.",
+        "enum" : [ "env.dev.", "env.int.", "env.rec.", "env.pre.prod.", "api." ]
+      }
+    }
+  } ],
+  "tags" : [ {
+    "description" : "Informations sur le statut du SE",
+    "name" : "healthcheck"
+  }, {
+    "description" : "Opérations sur les flux",
+    "name" : "flux"
+  } ],
+  "paths" : {
+    "/flux" : {
+      "post" : {
+        "description" : "Création d'un flux à partir d'un document déposé. Retourne l'identifiant du flux créé.\n",
+        "operationId" : "postFlux",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/entrant"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postFlux201Reponse"
+                }
+              }
+            },
+            "description" : "Ok. Une nouvelle ressource a été créée."
+          },
+          "400" : {
+            "description" : "Mauvaise requête. La requête était invalide ou ne peut aboutir."
+          },
+          "401" : {
+            "description" : "Non autorisé. La requête nécessite l'authentification de l'utilisateur."
+          },
+          "403" : {
+            "description" : "Non autorisé. Le serveur a compris la requête mais la refuse ou l'accès n'est pas autorisé."
+          },
+          "404" : {
+            "description" : "Non trouvée. Il n'y a pas de ressource à l'URI donnée."
+          },
+          "408" : {
+            "description" : "Délai de la requête dépassé."
+          },
+          "422" : {
+            "description" : "Erreur de validation des données."
+          },
+          "429" : {
+            "description" : "Le client a émis trop d'appels dans un délai donné."
+          },
+          "500" : {
+            "description" : "Erreur interne du serveur."
+          },
+          "501" : {
+            "description" : "Non implémenté."
+          },
+          "503" : {
+            "description" : "Service indisponible."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "flux.write" ]
+        } ],
+        "tags" : [ "flux" ]
+      }
+    },
+    "/flux/recherche" : {
+      "post" : {
+        "description" : "Recherche multicritère de flux. Retourne les flux tels qu'ils sont définis dans la spécification externe.\nLa recherche pourra être réalisée notamment sur :\n  - des identifiants de flux\n  - des noms de flux\n  - des statuts\n  - des dates\nLes critères de recherche pourront être cumulés (la liste exhaustive des critères sera indiquée dans une version\nultérieure des spécifications). Le résultat de la recherche sera paginé (50 résultats par\ndéfaut) et pourra être trié selon différents critères (tri sur date de dernière mise à jour par défaut).\n",
+        "operationId" : "getMultiFlux",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/getMultiFluxRequete"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/getMultiFlux200ReponsePaginee"
+                }
+              }
+            },
+            "description" : "Une réponse paginée des flux trouvées est retournée"
+          },
+          "400" : {
+            "description" : "Mauvaise requête. La requête était invalide ou ne peut aboutir."
+          },
+          "401" : {
+            "description" : "Non autorisé. La requête nécessite l'authentification de l'utilisateur."
+          },
+          "403" : {
+            "description" : "Non autorisé. Le serveur a compris la requête mais la refuse ou l'accès n'est pas autorisé."
+          },
+          "404" : {
+            "description" : "Non trouvée. Il n'y a pas de ressource à l'URI donnée."
+          },
+          "408" : {
+            "description" : "Délai de la requête dépassé."
+          },
+          "422" : {
+            "description" : "Erreur de validation des données."
+          },
+          "429" : {
+            "description" : "Le client a émis trop d'appels dans un délai donné."
+          },
+          "500" : {
+            "description" : "Erreur interne du serveur."
+          },
+          "501" : {
+            "description" : "Non implémenté."
+          },
+          "503" : {
+            "description" : "Service indisponible."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "flux.read" ]
+        } ],
+        "tags" : [ "flux" ]
+      }
+    },
+    "/flux/{id}" : {
+      "get" : {
+        "description" : "Renvoi le flux et ses informations, au moment de l'appel API.\n",
+        "operationId" : "getFlux",
+        "parameters" : [ {
+          "description" : "Identifiant technique du flux en base\n",
+          "example" : "012345678912345",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/flux"
+                }
+              }
+            },
+            "description" : "Les informations du flux sont retournées dans la réponse"
+          },
+          "400" : {
+            "description" : "Mauvaise requête. La requête était invalide ou ne peut aboutir."
+          },
+          "401" : {
+            "description" : "Non autorisé. La requête nécessite l'authentification de l'utilisateur."
+          },
+          "403" : {
+            "description" : "Non autorisé. Le serveur a compris la requête mais la refuse ou l'accès n'est pas autorisé."
+          },
+          "404" : {
+            "description" : "Non trouvée. Il n'y a pas de ressource à l'URI donnée."
+          },
+          "408" : {
+            "description" : "Délai de la requête dépassé."
+          },
+          "422" : {
+            "description" : "Erreur de validation des données."
+          },
+          "429" : {
+            "description" : "Le client a émis trop d'appels dans un délai donné."
+          },
+          "500" : {
+            "description" : "Erreur interne du serveur."
+          },
+          "501" : {
+            "description" : "Non implémenté."
+          },
+          "503" : {
+            "description" : "Service indisponible."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "flux.read" ]
+        } ],
+        "tags" : [ "flux" ]
+      }
+    },
+    "/healthcheck" : {
+      "get" : {
+        "description" : "Consultation des détails du statut Système d'échange",
+        "operationId" : "getHealth",
+        "responses" : {
+          "200" : {
+            "description" : "La bulle Système d'échange est fonctionnelle"
+          },
+          "500" : {
+            "description" : "Erreur interne du serveur."
+          },
+          "503" : {
+            "description" : "Service indisponible."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "health.read" ]
+        } ],
+        "summary" : "Consultation statut Système d'échange",
+        "tags" : [ "healthcheck" ]
+      }
+    }
+  },
+  "components" : {
+    "responses" : {
+      "bad_request" : {
+        "description" : "Mauvaise requête. La requête était invalide ou ne peut aboutir."
+      },
+      "unauthorized" : {
+        "description" : "Non autorisé. La requête nécessite l'authentification de l'utilisateur."
+      },
+      "forbidden" : {
+        "description" : "Non autorisé. Le serveur a compris la requête mais la refuse ou l'accès n'est pas autorisé."
+      },
+      "not_found" : {
+        "description" : "Non trouvée. Il n'y a pas de ressource à l'URI donnée."
+      },
+      "request_timeout" : {
+        "description" : "Délai de la requête dépassé."
+      },
+      "unprocessable_entity" : {
+        "description" : "Erreur de validation des données."
+      },
+      "too_many_requests" : {
+        "description" : "Le client a émis trop d'appels dans un délai donné."
+      },
+      "internal_server_error" : {
+        "description" : "Erreur interne du serveur."
+      },
+      "not_implemented" : {
+        "description" : "Non implémenté."
+      },
+      "service_unavailable" : {
+        "description" : "Service indisponible."
+      }
+    },
+    "schemas" : {
+      "entrant" : {
+        "description" : "Contenu du body pour créer un flux",
+        "properties" : {
+          "fluxInfo" : {
+            "$ref" : "#/components/schemas/fluxInfo"
+          },
+          "fichierFlux" : {
+            "description" : "Fichier flux codé en base 64.",
+            "format" : "binary",
+            "type" : "string"
+          }
+        },
+        "title" : "entrant",
+        "type" : "object"
+      },
+      "rechercheParUid" : {
+        "description" : "Critère d'identifiant unique d'un flux",
+        "properties" : {
+          "identifiantFlux" : {
+            "description" : "Identifiant flux",
+            "format" : "uuid",
+            "maxLength" : 15,
+            "type" : "string"
+          }
+        },
+        "required" : [ "identifiantFlux" ],
+        "type" : "object"
+      },
+      "rechercheParNom" : {
+        "description" : "critère nom du flux",
+        "properties" : {
+          "nomFichierFlux" : {
+            "description" : "Nom du fichier",
+            "example" : "justificatif.xml",
+            "maxLength" : 200,
+            "pattern" : "^[a-zA-Z0-9_-]{1,200}$",
+            "type" : "string"
+          }
+        },
+        "required" : [ "nomFichierFlux" ],
+        "type" : "object"
+      },
+      "rechercheParStatut" : {
+        "description" : "critère status du flux",
+        "properties" : {
+          "statutFlux" : {
+            "description" : "true: OK | False : KO",
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "statutFlux" ],
+        "type" : "object"
+      },
+      "RechercheParDateDebut" : {
+        "description" : "critère date au plus tôt du flux",
+        "properties" : {
+          "dateDebutFlux" : {
+            "description" : "Date de début de la recherche",
+            "example" : "2024-04-18",
+            "format" : "date",
+            "pattern" : "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          }
+        },
+        "required" : [ "dateDebutFlux" ],
+        "type" : "object"
+      },
+      "RechercheParDateFin" : {
+        "description" : "critère date au plus tard du flux",
+        "properties" : {
+          "dateFinFlux" : {
+            "description" : "Date de fin de la recherche",
+            "example" : "2025-04-18",
+            "format" : "date",
+            "pattern" : "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          }
+        },
+        "required" : [ "dateFinFlux" ],
+        "type" : "object"
+      },
+      "sort" : {
+        "description" : "Permet de trier la liste d’éléments retournés",
+        "example" : "[+A,-B]",
+        "items" : {
+          "example" : "+A",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "fields" : {
+        "description" : "Permet de filtrer les champs voulus dans la réponse comme décrit dans\n[Rule #157](https://opensource.zalando.com/restful-api-guidelines/#157)\n",
+        "example" : "[numero, statut]",
+        "items" : {
+          "example" : "numero",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "limit" : {
+        "description" : "Limite le nombre de résultats",
+        "example" : 50,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "offset" : {
+        "description" : "Nombre de résultat à ignorer",
+        "example" : 20,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "reponsePaginee" : {
+        "properties" : {
+          "items" : {
+            "description" : "Tableau contenant les éléments trouvés.",
+            "items" : { },
+            "type" : "array"
+          }
+        },
+        "required" : [ "items" ],
+        "type" : "object"
+      },
+      "flux" : {
+        "properties" : {
+          "identifiantFlux" : {
+            "description" : "Identifiant flux",
+            "example" : 12345678912345,
+            "format" : "uuid",
+            "type" : "integer"
+          },
+          "dateDepotFlux" : {
+            "description" : "Date de dépôt du flux",
+            "example" : "2024-04-18",
+            "format" : "date",
+            "pattern" : "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          },
+          "syntaxeFlux" : {
+            "description" : "Syntaxe du flux",
+            "enum" : [ "Ubl", "CII", "Factur-X" ],
+            "example" : "CII",
+            "type" : "string"
+          },
+          "typeFlux" : {
+            "description" : "Invoicing, Reporting, Declaration",
+            "enum" : [ "Invoicing", "Reporting", "Declaration" ],
+            "example" : "Invoicing",
+            "type" : "string"
+          },
+          "statutFlux" : {
+            "description" : "true: OK | False : KO",
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "dateDepotFlux", "identifiantFlux", "statutFlux", "syntaxeFlux", "typeFlux" ],
+        "type" : "object"
+      },
+      "postFlux201Reponse" : {
+        "properties" : {
+          "id" : {
+            "description" : "Identifiant du flux",
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "required" : [ "id" ],
+        "title" : "postFlux201Reponse",
+        "type" : "object"
+      },
+      "getMultiFluxParametreWhere" : {
+        "anyOf" : [ {
+          "$ref" : "#/components/schemas/rechercheParUid"
+        }, {
+          "$ref" : "#/components/schemas/rechercheParNom"
+        }, {
+          "$ref" : "#/components/schemas/rechercheParStatut"
+        }, {
+          "$ref" : "#/components/schemas/RechercheParDateDebut"
+        }, {
+          "$ref" : "#/components/schemas/RechercheParDateFin"
+        } ]
+      },
+      "getMultiFluxRequete" : {
+        "properties" : {
+          "where" : {
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/getMultiFluxParametreWhere"
+            },
+            "description" : "critères de recherche",
+            "title" : "getMultiFluxParametreWhere",
+            "type" : "object"
+          },
+          "sort" : {
+            "$ref" : "#/components/schemas/sort"
+          },
+          "fields" : {
+            "$ref" : "#/components/schemas/fields"
+          },
+          "limit" : {
+            "$ref" : "#/components/schemas/limit"
+          },
+          "offset" : {
+            "$ref" : "#/components/schemas/offset"
+          }
+        },
+        "required" : [ "where" ],
+        "title" : "getMultiFluxRequete",
+        "type" : "object"
+      },
+      "getMultiFlux200ReponsePaginee" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/reponsePaginee"
+        } ],
+        "properties" : {
+          "element" : {
+            "items" : {
+              "$ref" : "#/components/schemas/flux"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "element" ],
+        "title" : "getMultiFlux200ReponsePaginee",
+        "type" : "object"
+      },
+      "fluxInfo" : {
+        "description" : "Informations nécessaires à la création du flux",
+        "properties" : {
+          "nomFichierFlux" : {
+            "description" : "Nom du fichier",
+            "example" : "justificatif.xml",
+            "maxLength" : 200,
+            "type" : "string"
+          },
+          "codeInterface" : {
+            "description" : "Code de l'interface de flux auquel est abonné le raccordement",
+            "example" : "FED1234V",
+            "maxLength" : 8,
+            "minLength" : 8,
+            "pattern" : "^[A-Z]{3}[0-9]{4}[A-Z]{1}$",
+            "type" : "string"
+          },
+          "codeApplicationPiste" : {
+            "description" : "Code unique d'application défini dans PISTE qui identifie l'accès API d'un partenaire",
+            "example" : "FED1234V",
+            "maxLength" : 250,
+            "minLength" : 1,
+            "pattern" : "[A-Za-z0-9-_]{1,250}",
+            "type" : "string"
+          }
+        },
+        "title" : "fluxInfo",
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "bearer_auth" : {
+        "bearerFormat" : "JWT",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}
