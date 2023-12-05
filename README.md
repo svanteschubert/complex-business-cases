@@ -2,23 +2,24 @@
 
 ## Introduction
 
-[The complex business cases collected by French and German businesses](https://github.com/svanteschubert/complex-business-cases/issues). Meant as input for EN16931 maintained by CEN TC 434 and sponsored by EC.
+[The complex business cases - currently French and German B2B requirements -](https://github.com/svanteschubert/complex-business-cases/issues) are the input for the upcoming B2B EN16931 extension to be created by CEN TC 434 and sponsored by EC.
+The requirements were initially collected by KoSIT (Lars Rölker-Denker) and FeRD/AWV (Daniel Vinz) in a spreadsheet covering "complex business cases" for e-invoicing! 
+Additional requirements were gathered in France by Cyrille Sautereau for the [German/French Factur-X extension](https://fnfe-mpe.org/factur-x/factur-x_en/).
 
-The requirements were initally collected by KoSIT (Lars Rölker-Denker) and FeRD/AWV (Daniel Vinz) in a spreadsheet covering "complex business cases" for e-invoicing! Additional requirements were gathered in France by Cyrille Sautereau for the [German/French Factur-X extension](https://fnfe-mpe.org/factur-x/factur-x_en/).
-
-The spreadsheet was imported as GitHub issues similar as done 3 years before for the EN16931 amendments for CEN TC 434 WG 1, to be able to discuss / collaborate more efficently.
-
+The spreadsheet was imported as GitHub issues - like 3 years before for the EN16931 amendments of CEN TC 434 WG 1 - to be able to discuss/collaborate more efficiently in the CEN TC.
 [The import from spreadsheet to GitHub issues is open-source and is described in detail](./src/main/java/org/cen/tc434/issues/Csv2Github.md).
 
-## Overview over the Issues
+## Issue Overview
 
-The spreadsheet consisted of three parts:
+There are currently three groups of issues:
 
 1. The GitHub Issues 1 to 34 are from the original German spreadsheet.
+   The German requirements have still draft status, as the data needs clean up and extension.
 2. The GitHub Issues 35 to 39 are newly added by the industry (precisely by the Institute of digitalization of tax by Jan Koerner in charge).
-3. The GitHub Issues 40 to 76 were shamelessly copied from Cyrilles' presentation.
+3. The GitHub Issues 40 to 77 were taken from the [French Government B2B requirements](docs/fr/README.md)
+   The details from the French requirements coming from the use cases of the French government and currently most advanced.
 
-The structure of the issue description is taken from the columns of the spreadsheet and still might be changed:
+The structure of the German issue was derived by the columns of the spreadsheet, but still might be changed:
 
 1. Background
 2. Objective
@@ -27,44 +28,32 @@ The structure of the issue description is taken from the columns of the spreadsh
 5. Approaches
 6. Further Procedure
 7. Feedback
-but we have to start somewhere and we were a little under time pressure!
 
-The issues have still draft status, as the data needs clean up and extension.
-Daniel Vinz (FeRD/AWV) already found duplicates, like "duplicate invoice" and many issues (like those from the industry) are just the title.
-Daniel and I are aiming to review the German part (1-34), which was translated by DeepML, on readability and clearness.
-A professor used to say, if he has to read slower, the text is not well written! This should be our rule of guidance!
+## What's done
 
-## Initial Timeline
+* 05.12.2023: All French requirements 40 to #77 were filled with the official description of the use cases 
 
-As the first draft of input for CEN TC 434 should be ready at the start of next year, we aim for our first clean-up round within the next two weeks until the next 434 WG 5 (extension) call at 7th of November.
-Our plan is to make this repository open for public review for businesses at this date.
+## What's next
+
+* The German requirements (1-34) - which was translated from German to English by DeepML - should be reviewed on readability and clearness.
+  If there is a duplication, they should be marked with our new label **Duplicate**.
+* Daniel mentioned that the requirement "Early Payment Discount" AKA "German Skonto" will be added to our requirements
+* We shoud match our GitHub issueswith the EN16931 core amendment list:
+  ![image](https://github.com/svanteschubert/complex-business-cases/assets/825051/02058ee2-4fb3-4330-821c-baa490731a97)
+  For each EN16931 amendment we need to decide:
+    1. Does it needs to be added to this Github?
+    1. Which issue needs a label?
+        1. If red - which means rejected to the core - the label should be **EN16931-B2B-Extension**
+        2. Otherwise thelabel should be **EN16931-Core-Amendment**  
+* If the requirements are cleaned-up, this repository will be opened for public review of EU businesses
 
 ## Editing & Cleaning up the Issues
 
-Within the first two weeks, I would suggest that there are only 5 editors. Daniel, Lars, Cyrille, Jan and myself. Others, please get in contact with us or wait until the first clean up is done.
-
-To add/change something just exchange the existing description:
+If base information is being changed, please add/change the inital description:
 ![How to edit an issue description](./src/test/resources/GitHub-Issue-Editing.png)
-
 
 The formation is done by text markdown, which is quite straight forward:
 https://docs.github.com/de/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
-
-## Additional Inputs / Updates
-
-### Input from France 
-
-Cyrille was so kind to provide the latest update from France related to Factur-X:
-
-1. EN16931 extensions for B2B Mandate in France ([PDF document of 4 pages](https://github.com/svanteschubert/complex-business-cases/blob/main/docs/2023%2010%2023%20-%20Extension%20for%20France%20B2B%20Mandate.pdf))
-2. [Factur-X overview spreadsheet](https://github.com/svanteschubert/complex-business-cases/blob/main/docs/2023%2010%2023%20-%20EN16931%20EXTENDED%20CTC%20FR.xlsx) - extending the EN16931 semantic with 175 semantic entities in the first column (all starting with EXT-FR-FE) and some initial syntax-binding.
-
-### Update from Germany
-
-Daniel mentioned that there are two issues missing and will be added to our issue list:
-
-1. Split Payment
-2. Early Payment Discount
 
 ## Problem of Metadata (how to identify issues via labels)
 
