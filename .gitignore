@@ -260,3 +260,5 @@ gradle-app.setting
 
 # Editor files
 **/.~lock*
+# MS Office temporary files
+**/~$*
