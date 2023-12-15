@@ -42,16 +42,23 @@ The former structure of the German issue was derived by the columns of the sprea
 * The German requirements (1-34) - which was translated from German to English by DeepML - are being reviewed on readability and clearness.
   If there is a duplication, they should be marked with our new label **Duplicate**.
   The former owner Daniel and Lars might be first in line to solve this problem.
-* We should compare our GitHub issues with the EN16931 core amendment list:
+* We should compare our new GitHub issues with those from the [GitHub issues list of the EN16931 core amendment (**private to CEN TC 434 members**)](https://github.com/svanteschubert/CEN-TC434-WG1)
   ![image](https://github.com/svanteschubert/complex-business-cases/assets/825051/02058ee2-4fb3-4330-821c-baa490731a97)
   For each EN16931 amendment we need to decide:
     1. Does it needs to be added to this Github?
     1. Which issue needs a label?
         1. If red - which means rejected to the core - the label should be **EN16931-B2B-Extension**
-        2. Otherwise the label should be **EN16931-Core-Amendment**  
+        2. Otherwise the label should be **EN16931-Core-Amendment**
+   **NOTE:** The [CEN amendment might become in the end a CEN revision](https://boss.cen.eu/maintenance/amndt/pages/) as the time period of 4 years after EN16931 had been exceeded. CEN has not adopted standardisation to software development, yet!
 * The French use case specification 2.3 just refers to six business groups: EXT-FR-FE-BG-01 to EXT-FR-FE-BG-05 and EXT-FR-FE-BG-10.
 But [their spreadsheet](https://svanteschubert.github.io/complex-business-cases/fr/20231023_EN16931-EXTENDED-CTC-FR.html#EXT-FR-FE-01) points out a total of 175 business terms (BT)/ business groups (BG)!
 All new BT/BG (with prefix EXT-FR-FE-) should be mapped to business cases to be certain to present them to CEN and let them become part of the EN16931 standard.
+
+## How to participate
+
+Just in case you like to participate actively on the work of the B2B feature set for Europe.
+The most efficient way is to pay to join your National Standardization Body (NSB - e.g. DIN for Germany) and the NSB will send you to the CEN TC 434 working groups.
+As a company often your national association are already bundling efforts.
 
 ## Editing & Cleaning up the Issues
 
