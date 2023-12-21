@@ -1,0 +1,2256 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "contact" : {
+      "email" : "api@contact.name",
+      "name" : "api@contact.name"
+    },
+    "description" : "### Warnings The publication of swaggers makes it possible to set out precisely the interactions that will be possible using the PPF APIs.This is not a production version. These swaggers can be modified later (methods, endpoints).\n- The use of these swaggers will be possible as soon as an application is published on PISTE, which is not the case today.\The API __ppf-openapi-annuaire-api-public__ allows you to:\n- Create, consult, update and search for lines of address:\n- Search and consult companies (Siren)\n- Search and consult establishments (Siret)\n- Create, consult, update, delete and search for routing codes:\n**Authentication:** via track.\Caution:** the results of your search will depend on your authorisations. For example, a simple user cannot have access to the registration data of the Partner Dematerialisation Platforms (PDP) except for the data of the organisation to which they belong.\n---\n## Addressing lineThe addressing line is the mesh at which the recipient wishes to receive their invoices (SIREN or SIREN/SIRET or SIREN/SIRET/Routing code). The routing code can be a service code, a GLN code, an ODETTE code or an internal management code used by the recipient.\n- `POST /directory-line` => Create a directory addressing line.\n - Authorisations : Request body** : Address line in JSON format `GET /directory-line/{id}` => Consult an address line in the directory according to the id passed in parameter: PUT /directory-line/{id}` => Update an address line in the directory according to the id passed in parameter: Query body** : Addressing line in JSON format `POST /directory-line/{search` => Search for addressing lines in the directory according to the criteria passed in parameter: Example of kinematics :- `POST /directory-line/search` => Search for address lines according to one or more criteria, potentially returning several results.\n\n - `GET /directory-line/{id}` => to view the details of the addressing line.\n - With id: the code of the addressing line for which you wish to obtain the details.\PUT /directory-line/{id}` => to update the address line.\With the fields to be updated in the body of the request - `POST /directory-line` => to create a new address line.\n---\n## Siren- `POST /siren/search` => Search for a company according to the criteria passed in parameter.\n - Habilitations : To be defined - **Query body** : search criteria in JSON format - `GET /siren/{id}` => Search for a company using the id passed in parameter - Authorisations : To be defined - With an id passed in parameter### KinematicsExample of kinematics :\n- `POST /siren/{search` => to search for companies according to one or more criteria, potentially returning several results.\With id: the id of the company for which you wish to obtain details Siret- `POST /siren/{search` => Searches for an establishment according to the criteria passed in parameter - Habilitations : to be defined - **Query body** : search criteria in JSON format - `GET /siret/{id}` => Consult an establishment according to the id passed in parameter - Access rights : CinématiqueExample de cinématique :\n- `POST /siret/{search` => to search for establishments according to one or more criteria, potentially returning several results.\With id: the id of the establishment for which you wish to obtain details. Routing code => Create a routing code for the directory: to be defined - **Query body** : routing code in JSON format - `GET /routing-code/{id}` => Consult a routing code in the directory according to the id passed in parameter - Permissions: PUT /code-routage/{id}` => Update a routing code in the directory according to the id passed in parameter: to be defined - **Query body** : routing code in JSON format - `DELETE /routing-code/{id}` => Delete a routing code from the directory according to the id passed in parameter - Permissions : POST /routing-code/{search} => Search for addressing lines in the directory according to the criteria passed in parameter: To be defined - **Query body** : search criteria in JSON format# KinematicsExample of kinematics :`POST /code-routing/search` => to search for lines of addressing according to one or more criteria, potentially several results returned.`GET /code-routing/{id}` => to consult the routing code in detail.With id: the code the routing code for which you wish to obtain the details.\PUT /code-routage/{id}` => to update the routing code - With id: the code the routing code you wish to update - With the fields to be updated in the request body - DELETE /code-routage/{id}` => to delete the routing code.\With id: the code the routing code you wish to delete => to create a new routing code Supervisor `GET /healthcheck` => Allows you to check if the API is online: To be defined",
+    "title": "PPF annuaire API public",
+    "version": "Increment 2 - Specs Ext 2.2",
+    "x-audience": "external-public",
+    "x-api-id" : "3230c8a1-f7df-4fa1-8506-24ce034670ce"
+  },
+  "externalDocs" : {
+    "description": "PPF v2.2 external specifications",
+    "url" : "https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/specification_externes_b2b/version_2-2_du_31_01_2023/spec_facturation_electronique_v2.2_31-01-2023.zip"
+  },
+  "servers" : [ {
+    "description" : "Public directory microservice access url",
+    "url" : "https://aife.economie.gouv.fr/ppf/annuaire-public/v1"
+  } ],
+  "tags" : [ {
+    "description" : "Address line in the directory",
+    "name" : "Addressing line"
+  }, {
+    "description" : "Company by Siren number",
+    "name" : "Siren"
+  }, {
+    "description": "Establishment by Siret number",
+    "name" : "Siret"
+  }, {
+    "description" : "Code routage",
+    "name" : "Routing code
+  }, {
+    "description" : "Reserved for supervisor",
+    "name" : "Supervisor"
+  } ],
+  "paths" : {
+    "/directory-line" : {
+      "post" : {
+        "description" : "Create a new addressing line for a SIREN, a SIRET or a ROUTING CODE as well as the associated contract data",
+        "operationId" : "createLigneAdressage",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/createLigneAdressageBody"
+              }
+            }
+          },
+          "description": "Address line creation data",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/createLigneAdressage_200_response"
+                }
+              }
+            },
+            "description" : "Successful request."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "lineAddressing" ]
+        } ],
+        "summary" : "Adds an addressing line to the directory",
+        "tags" : [ "Address line" ]
+      }
+    },
+    "/directory-line/{id}" : {
+      "get" : {
+        "description" : "Retrieve the data from the address line corresponding to the identifier passed in parameters",
+        "operationId" : "getLigneAdressage",
+        "parameters": [ {
+          "description": "Corresponds to the id of an addressing line,
+          "example" : "dcsc456sdcsdcs556",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 125,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ligneAdressagePayload"
+                }
+              }
+            },
+            "description" : "Returns an addressing line."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or cannot be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "lineAddressing" ]
+        } ],
+        "summary" : "Consult an addressing line in the Directory",
+        "tags" : [ "Address line" ]
+      },
+      "put" : {
+        "description" : "Update the status of an addressing line",
+        "operationId" : "updateLigneAdressage",
+        "parameters" : [ {
+          "description": "Corresponds to the id of an addressing line",
+          "example" : "dcsc456sdcsdcs556",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 125,
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/updateLigneAdressageBody"
+              }
+            }
+          },
+          "description" : "Address line update data",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful request."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "lineAddressing" ]
+        } ],
+        "summary" : "Enable/Disable an addressing line",
+        "tags" : [ "Address line" ]
+      }
+    },
+    "/directory-line/search" : {
+      "post" : {
+        "description" : "Search for address lines according to various criteria and return the address lines in the desired format",
+        "operationId" : "searchLigneAdressage",
+        "parameters": [ {
+          "description": "Corresponds to the desired format of the return file containing the search results. Possible values are CSV, XML. If the parameter is not defined, empty or contains a value different from the possible values indicated below, the search result is returned in JSON format.",
+          "example" : "CSV",
+          "in" : "query",
+          "name" : "format",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "CSV", "XML" ],
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the SIREN number of the address line searched. Strict" search mode,
+          "example" : "702042755",
+          "in" : "query",
+          "name" : "siren-destinataire",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 9,
+            "minLength" : 9,
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the company name of the invoice recipient who defined the address line(s) searched for. Search mode " contains ",
+          "example": "Boulangerie Pascale",
+          "in": "query",
+          "name": "recipient-company name",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the type of recipient structure which has defined the addressing line(s) searched for. Strict" search mode,
+          "example": "Private subject",
+          "in": "query",
+          "name" : "type-entite-destinataire",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "Private", "Public" ],
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the SIRET number of the invoice recipient. Strict" search mode,
+          "example" : "70204275500240",
+          "in" : "query",
+          "name": "siret-destinataire",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 14,
+            "minLength" : 14,
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the routing code of the invoice recipient. A routing code can be a service code, a GLN code, an ODETTE code or an internal management code used by the recipient. Strict" or "contains" search mode depending on the input parameter",
+          "example" : "123",
+          "in": "query",
+          "name" : "code-routage-destinataire",
+          "required": false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Defines whether the search on the routing code criterion should be done "strictly" or "contains".",
+          "example" : true,
+          "in" : "query",
+          "name" : "est-rech-code-routage-strict",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "description": "Corresponds to the routing code of the invoice recipient. Search mode " contains ".",
+          "example": "Routing code label",
+          "in": "query",
+          "name": "recipient-routing-code-label",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the postal address of the invoice recipient. Search mode " contains ".",
+          "example": "16 BIS RUE HENRI BARBUSSE",
+          "in": "query",
+          "name": "libelle-adresse",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the postcode of the invoice recipient. Search mode " contains ".",
+          "example" : "38100",
+          "in" : "query",
+          "name" : "code-postal",
+          "required": false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the municipality of the invoice recipient Search mode "contains"",
+          "example" : "Grenoble",
+          "in" : "query",
+          "name": "libelle-commune",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the country of the invoice recipient. Search mode "contains"",
+          "example" : "France",
+          "in": "query",
+          "name": "country label",
+          "required": false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/searchLigneAdressage_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ligneAdressagePayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "The line(s) of addressing corresponding to the search criteria".
+          },
+          "206" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/ligneAdressagePayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Request processed without error, but the volume of information returned has been reduced."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "lineAddressing" ]
+        } ],
+        "summary" : "Search for addressing lines in the directory",
+        "tags" : [ "Address line" ]
+      }
+    },
+    "/siren/{id}" : {
+      "get" : {
+        "description" : "Returns the details of a company, with SIRETs on request (fields)",
+        "operationId" : "getEntreprise",
+        "parameters" : [ {
+          "description" : "Corresponds to the id of a company",
+          "example" : "dcsc456sdcsdcs556",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 125,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/uniteLegalePayload"
+                }
+              }
+            },
+            "description" : "Returns a company."
+          },
+          "400" : {
+            "description": "Bad request. Query was invalid or cannot be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "siren" ]
+        } ],
+        "summary" : "Search a company by siren",
+        "tags" : [ "siren" ]
+      }
+    },
+    "/siren/search" : {
+      "post" : {
+        "description" : "Multi-criteria company search",
+        "operationId" : "searchEntreprise",
+        "parameters" : [ {
+          "description" : "Corresponds to the SIREN number of the address line searched for",
+          "example" : "702042755",
+          "in" : "query",
+          "name" : "siren",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 9,
+            "minLength" : 9,
+            "type" : "string"
+          }
+        }, {
+          "description" : "To be defined",
+          "example" : "Parameters to be defined",
+          "in" : "query",
+          "name" : "todo",
+          "schema" : {
+            "maxLength" : 150,
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/searchLigneAdressage_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/uniteLegalePayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description": "Returns a company."
+          },
+          "206" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/uniteLegalePayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Request processed without error, but the volume of information returned has been reduced."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "siren" ]
+        } ],
+        "summary" : "Multi-criteria company search",
+        "tags" : [ "siren" ]
+      }
+    },
+    "/siret/{id}" : {
+      "get" : {
+        "description" : "Returns the details of an establishment",
+        "operationId" : "getEtablissement",
+        "parameters" : [ {
+          "description" : "Corresponds to the id of an establishment",
+          "example" : "dcsc456sdcsdcs556",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 125,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/etablissementPayload"
+                }
+              }
+            },
+            "description" : "Returns a company."
+          },
+          "400" : {
+            "description": "Bad request. Query was invalid or cannot be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "siret" ]
+        } ],
+        "summary" : "Consult an establishment by siret",
+        "tags" : [ "Siret" ]
+      }
+    },
+    "/siret/search" : {
+      "post" : {
+        "description" : "Multi-criteria search for establishments",
+        "operationId" : "searchEtablissement",
+        "parameters" : [ {
+          "description" : "Corresponds to the SIRET number of the address line searched for",
+          "example" : "70204275500240",
+          "in" : "query",
+          "name" : "siret",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 14,
+            "minLength" : 14,
+            "type" : "string"
+          }
+        }, {
+          "description" : "To be defined",
+          "example" : "Parameters to be defined",
+          "in" : "query",
+          "name" : "todo",
+          "schema" : {
+            "maxLength" : 150,
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/searchLigneAdressage_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/etablissementPayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description": "Returns a company."
+          },
+          "206" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/etablissementPayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Request processed without error, but the volume of information returned has been reduced."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "siret" ]
+        } ],
+        "summary" : "Multi-criteria search for establishments",
+        "tags" : [ "Siret" ]
+      }
+    },
+    "/route-code" : {
+      "post" : {
+        "description" : "Create a routing code",
+        "operationId" : "createCodeRoutage",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/createCodeRoutageBody"
+              }
+            }
+          },
+          "description" : "Routing code creation data",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/createCodeRoutage_200_response"
+                }
+              }
+            },
+            "description" : "Successful request."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "codeRouting" ]
+        } ],
+        "summary" : "Create a routing code",
+        "tags" : [ "RoutingCode" ]
+      }
+    },
+    "/routing-code/{id}" : {
+      "delete" : {
+        "description" : "Delete a routing code",
+        "operationId" : "deleteRoutingCode",
+        "parameters" : [ {
+          "description" : "Corresponds to the id of a routing code.",
+          "example" : "dcsc456sdcsdcs556",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 125,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful request."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "codeRouting" ]
+        } ],
+        "summary" : "Delete a routing code",
+        "tags" : [ "Routing code" ]
+      },
+      "get" : {
+        "description": "Retrieve the Routing Code data corresponding to the identifier passed in parameters.",
+        "operationId" : "getRoutingCode",
+        "parameters" : [ {
+          "description": "Corresponds to the Routing Code id.",
+          "example" : "dcsc456sdcsdcs556",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 125,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/codeRoutagePayload"
+                }
+              }
+            },
+            "description" : "Returns a routing code."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or cannot be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "codeRouting" ]
+        } ],
+        "summary" : "Consult a routing code in the Directory",
+        "tags" : [ "Routing code" ]
+      },
+      "put" : {
+        "description" : "Update the status of a routing code",
+        "operationId" : "updateRoutingCode",
+        "parameters" : [ {
+          "description" : "Corresponds to the id of a routing code",
+          "example" : "dcsc456sdcsdcs556",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 125,
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/updateCodeRoutageBody"
+              }
+            }
+          },
+          "description" : "Routing Code update data",
+          "required": true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful request."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "codeRouting" ]
+        } ],
+        "summary" : "Enable/Disable a routing code",
+        "tags" : [ "Routing code" ]
+      }
+    },
+    "/routing-code/search" : {
+      "post" : {
+        "description" : "Search for routing codes according to various criteria and return the routing codes in the desired format",
+        "operationId" : "searchCodeRoutage",
+        "parameters" : [ {
+          "description" : "To be defined",
+          "example" : "Parameters to be defined",
+          "in" : "query",
+          "name" : "todo",
+          "schema" : {
+            "maxLength" : 150,
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the desired format of the return file containing the search results. Possible values are CSV, XML. If the parameter is not defined, empty or contains a value different from the possible values indicated below, the search result is returned in JSON format,
+          "example" : "CSV",
+          "in" : "query",
+          "name" : "format",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "CSV", "XML" ],
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the SIREN number of the address line searched. Strict" search mode,
+          "example" : "702042755",
+          "in" : "query",
+          "name" : "siren-destinataire",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 9,
+            "minLength" : 9,
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the company name of the invoice recipient who defined the address line(s) searched for. Search mode " contains ",
+          "example": "Boulangerie Pascale",
+          "in": "query",
+          "name": "recipient-company name",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the type of recipient structure which has defined the addressing line(s) searched for. Strict" search mode,
+          "example": "Private subject",
+          "in": "query",
+          "name" : "type-entite-destinataire",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "Private", "Public" ],
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the SIRET number of the invoice recipient. Strict" search mode,
+          "example" : "70204275500240",
+          "in" : "query",
+          "name": "siret-destinataire",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 14,
+            "minLength" : 14,
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the routing code of the invoice recipient. A routing code can be a service code, a GLN code, an ODETTE code or an internal management code used by the recipient. Strict" or "contains" search mode depending on the input parameter",
+          "example" : "123",
+          "in": "query",
+          "name" : "code-routage-destinataire",
+          "required": false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Defines whether the search on the routing code criterion should be done "strictly" or "contains".",
+          "example" : true,
+          "in" : "query",
+          "name" : "est-rech-code-routage-strict",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "description": "Corresponds to the routing code of the invoice recipient. Search mode " contains ".",
+          "example": "Routing code label",
+          "in": "query",
+          "name": "recipient-routing-code-label",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the postal address of the invoice recipient. Search mode " contains ".",
+          "example": "16 BIS RUE HENRI BARBUSSE",
+          "in": "query",
+          "name": "libelle-adresse",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the postcode of the invoice recipient. Search mode " contains ".",
+          "example" : "38100",
+          "in" : "query",
+          "name" : "code-postal",
+          "required": false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Corresponds to the municipality of the invoice recipient Search mode "contains"",
+          "example" : "Grenoble",
+          "in" : "query",
+          "name": "libelle-commune",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description": "Corresponds to the country of the invoice recipient. Search mode "contains"",
+          "example" : "France",
+          "in": "query",
+          "name": "country label",
+          "required": false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/searchLigneAdressage_request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/codeRoutagePayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "The routing code(s) corresponding to the search criteria".
+          },
+          "206" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/codeRoutagePayload"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Request processed without error, but the volume of information returned has been reduced."
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          },
+          "default" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/error"
+                }
+              }
+            },
+            "description" : "An error has occurred - see the status code and the json problem for more information."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "codeRouting" ]
+        } ],
+        "summary" : "Search for routing codes in the directory",
+        "tags" : [ "Routing code" ]
+      }
+    },
+    "/healthcheck" : {
+      "get" : {
+        "description" : "Check if the API connection is operational",
+        "operationId" : "getHealth",
+        "responses" : {
+          "200" : {
+            "description" : "The connection to the API is operational."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "503" : {
+            "description": "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "health.read" ]
+        } ],
+        "summary" : "Check if the API connection is operational",
+        "tags" : [ "Supervisor" ]
+      }
+    }
+  },
+  "components" : {
+    "parameters" : {
+      "id-addressing-line" : {
+        "description" : "Corresponds to the id of an addressing line.",
+        "example" : "dcsc456sdcsdcs556",
+        "in" : "path",
+        "name" : "id",
+        "required" : true,
+        "schema" : {
+          "maxLength" : 125,
+          "type" : "string"
+        }
+      },
+      "format" : {
+        "description": "Corresponds to the desired format of the return file containing the search results. Possible values are CSV, XML. If the parameter is not defined, empty or contains a value different from the possible values indicated below, the search result is returned in JSON format.",
+        "example" : "CSV",
+        "in" : "query",
+        "name" : "format",
+        "required" : false,
+        "schema" : {
+          "enum" : [ "CSV", "XML" ],
+          "type" : "string"
+        }
+      },
+      "siren-recipient" : {
+        "description" : "Corresponds to the SIREN number of the address line searched. Strict" search mode,
+        "example" : "702042755",
+        "in" : "query",
+        "name" : "siren-destinataire",
+        "required" : false,
+        "schema" : {
+          "maxLength" : 9,
+          "minLength" : 9,
+          "type" : "string"
+        }
+      },
+      "recipient-company-name" : {
+        "description": "Corresponds to the company name of the invoice recipient who has defined the address line(s) searched for. Search mode "contains",
+        "example": "Boulangerie Pascale",
+        "in": "query",
+        "name": "recipient-company name",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "type-recipient-entite" : {
+        "description": "Corresponds to the type of recipient structure which has defined the addressing line(s) searched for. Strict" search mode,
+        "example": "Private subject",
+        "in": "query",
+        "name" : "type-entite-destinataire",
+        "required" : false,
+        "schema" : {
+          "enum" : [ "Private", "Public" ],
+          "type" : "string"
+        }
+      },
+      "siret-destinataire" : {
+        "description": "Corresponds to the SIRET number of the invoice recipient. Strict" search mode,
+        "example": "70204275500240",
+        "in" : "query",
+        "name": "siret-destinataire",
+        "required" : false,
+        "schema" : {
+          "maxLength" : 14,
+          "minLength" : 14,
+          "type" : "string"
+        }
+      },
+      "recipient routing code" : {
+        "description": "Corresponds to the routing code of the invoice recipient. A routing code can be a service code, a GLN code, an ODETTE code or an internal management code used by the recipient. Strict" or "contains" search mode depending on the input parameter",
+        "example" : "123",
+        "in": "query",
+        "name" : "code-routage-destinataire",
+        "required": false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "est-rech-code-routage-strict" : {
+        "description" : "Defines whether the search on the routing-code criterion should be done "strictly" or "contains".",
+        "example" : true,
+        "in" : "query",
+        "name" : "est-rech-code-routage-strict",
+        "required" : false,
+        "schema" : {
+          "type" : "boolean"
+        }
+      },
+      "recipient-routing-code-label" : {
+        "description": "Corresponds to the routing code label of the invoice recipient. Search mode "contains",
+        "example": "Routing code label",
+        "in": "query",
+        "name": "recipient-routing-code-label",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "address label" : {
+        "description": "Corresponds to the postal address of the invoice recipient. Search mode " contains ".",
+        "example": "16 BIS RUE HENRI BARBUSSE",
+        "in": "query",
+        "name": "libelle-adresse",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "postcode" : {
+        "description": "Corresponds to the postcode of the invoice recipient. Search mode " contains ".",
+        "example" : "38100",
+        "in": "query",
+        "name" : "code-postal",
+        "required": false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "libelle-commune" : {
+        "description": "Corresponds to the municipality of the invoice recipient Search mode "contains"",
+        "example" : "Grenoble",
+        "in" : "query",
+        "name": "libelle-commune",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "country-code" : {
+        "description": "Corresponds to the country of the invoice recipient. Search mode "contains",
+        "example" : "France",
+        "in": "query",
+        "name": "libelle-pays",
+        "required": false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "id-siren" : {
+        "description" : "Corresponds to the id of a company.",
+        "example" : "dcsc456sdcsdcs556",
+        "in" : "path",
+        "name" : "id",
+        "required" : true,
+        "schema" : {
+          "maxLength" : 125,
+          "type" : "string"
+        }
+      },
+      "siren" : {
+        "description" : "Corresponds to the SIREN number of the address line searched for",
+        "example" : "702042755",
+        "in" : "query",
+        "name" : "siren",
+        "required" : false,
+        "schema" : {
+          "maxLength" : 9,
+          "minLength" : 9,
+          "type" : "string"
+        }
+      },
+      "todo" : {
+        "description" : "To be defined",
+        "example" : "Parameters to be defined",
+        "in" : "query",
+        "name" : "todo",
+        "schema" : {
+          "maxLength" : 150,
+          "type" : "string"
+        }
+      },
+      "id-siret" : {
+        "description" : "Corresponds to the id of an establishment",
+        "example" : "dcsc456sdcsdcs556",
+        "in" : "path",
+        "name" : "id",
+        "required" : true,
+        "schema" : {
+          "maxLength" : 125,
+          "type" : "string"
+        }
+      },
+      "siret" : {
+        "description": "Corresponds to the SIRET number of the address line searched for",
+        "example" : "70204275500240",
+        "in" : "query",
+        "name" : "siret",
+        "required" : false,
+        "schema" : {
+          "maxLength" : 14,
+          "minLength" : 14,
+          "type" : "string"
+        }
+      },
+      "routing-code-id" : {
+        "description" : "Corresponds to the id of a routing code.",
+        "example" : "dcsc456sdcsdcs556",
+        "in" : "path",
+        "name" : "id",
+        "required" : true,
+        "schema" : {
+          "maxLength" : 125,
+          "type" : "string"
+        }
+      }
+    },
+    "responses" : {
+      "bad_request" : {
+        "description" : "Bad request. The request was invalid or cannot be completed."
+      },
+      "unauthorized" : {
+        "description": "Unauthorised. The request requires user authentication."
+      },
+      "forbidden" : {
+        "description" : "Not authorised. The server has understood the request but refuses it or access is not authorised."
+      },
+      "not_found" : {
+        "description" : "Not found. There is no resource at the given URI."
+      },
+      "request_timeout" : {
+        "description": "Request timeout exceeded."
+      },
+      "unprocessable_entity" : {
+        "description": "Data validation error."
+      },
+      "too_many_requests" : {
+        "description": "The client has made too many calls in a given time period."
+      },
+      "internal_server_error" : {
+        "description": "Internal server error."
+      },
+      "not_implemented" : {
+        "description": "Not implemented."
+      },
+      "service_unavailable" : {
+        "description": "Service unavailable."
+      }
+    },
+    "schemas" : {
+      "createLigneAdressageBody" : {
+        "properties" : {
+          "dateApplication" : {
+            "$ref" : "#/components/schemas/dateApplication"
+          },
+          "statusBillingLine" : {
+            "$ref" : "#/components/schemas/invoicingLineStatus"
+          },
+          "codeStructureSiren" : {
+            "$ref" : "#/components/schemas/siren"
+          },
+          "codeStructureSiret" : {
+            "$ref" : "#/components/schemas/siret"
+          },
+          "codeStructureRoutingCode" : {
+            "$ref" : "#/components/schemas/codeRoutage"
+          },
+          "dateStartContract" : {
+            "$ref" : "#/components/schemas/contractStartDate"
+          },
+          "dateEndContract" : {
+            "$ref" : "#/components/schemas/dateEndContract"
+          },
+          "immatPlatform" : {
+            "$ref" : "#/components/schemas/immatPlatform"
+          }
+        },
+        "required" : [ "dateApplication", "dateStartContract", "dateEndContract", "immatPlatform", "statusInvoicingLine" ],
+        "title" : "CreateLigneAdressageBody",
+        "type": "object
+      },
+      "idLigneAdressage" : {
+        "description": "Addressing line identifier",
+        "example" : "dcsc456sdcsdcs556",
+        "maxLength" : 125,
+        "type" : "string"
+      },
+      "error" : {
+        "properties" : {
+          "type" : {
+            "default" : "about:blank",
+            "example" : "/path/url-de-reference",
+            "format" : "uri-reference",
+            "type" : "string"
+          },
+          "title" : {
+            "example" : "The title of the error",
+            "type" : "string"
+          },
+          "status" : {
+            "description" : "The HTTP status code generated by the origin server for this occurrence of the problem.\n",
+            "exclusiveMaximum" : true,
+            "format" : "int32",
+            "maximum" : 600,
+            "minimum" : 100,
+            "type" : "integer"
+          },
+          "detail" : {
+            "example" : "The error description",
+            "type" : "string"
+          },
+          "instance" : {
+            "example" : "/path/url-de-reference#instance-of-context",
+            "format" : "uri-reference",
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "linePayloadAddress" : {
+        "properties" : {
+          "codeLigneAdressage" : {
+            "$ref" : "#/components/schemas/codeLigneAdressage"
+          },
+          "recipientSiren" : {
+            "$ref" : "#/components/schemas/sirenDestinataire"
+          },
+          "recipientSocietyName" : {
+            "$ref" : "#/components/schemas/recipientSurname" }, "recipientSocietyName" : {
+          },
+          "typeEntiteDestinataire" : {
+            "$ref" : "#/components/schemas/typeEntiteDestinataire"
+          },
+          "siretDestinataire" : {
+            "$ref" : "#/components/schemas/siretDestinataire"
+          },
+          "libelleAdresse1Destinataire" : {
+            "$ref" : "#/components/schemas/addressBooklet1Addressee"
+          },
+          "libelleAdresse2Destinataire" : {
+            "$ref" : "#/components/schemas/libelleAdresse2Destinataire"
+          },
+          "libelleAdresse3Destinataire" : {
+            "$ref" : "#/components/schemas/libelleAdresse3Destinataire"
+          },
+          "recipientPostCode" : {
+            "$ref" : "#/components/schemas/codePostalDestinataire"
+          },
+          "libelleCommuneDestinataire" : {
+            "$ref" : "#/components/schemas/communeAddresseeName"
+          },
+          "libellePaysDestinataire" : {
+            "$ref" : "#/components/schemas/libellePaysDestinataire"
+          },
+          "recipientRoutingCode" : {
+            "$ref" : "#/components/schemas/codeRoutageDestinataire"
+          },
+          "libelleCodeRoutageDestinataire" : {
+            "$ref" : "#/components/schemas/recipientRoutingCode" label
+          },
+          "typeCodeRoutageDestinataire" : {
+            "$ref" : "#/components/schemas/typeCodeRoutingDestinataire"
+          },
+          "typeRecipientPlatform" : {
+            "$ref" : "#/components/schemas/typeRecipientPlatform"
+          },
+          "recipientPlatformID" : {
+            "$ref" : "#/components/schemas/identifiantDestinatairePlateforme"
+          },
+          "platformName" : {
+            "$ref" : "#/components/schemas/PlatformCorporateName"
+          },
+          "platformStartDate" : {
+            "$ref" : "#/components/schemas/dateUtilisationPlateforme"
+          },
+          "datePlatformUseEnd" : {
+            "$ref" : "#/components/schemas/dateEndPlatformUse"
+          },
+          "statusCommitment" : {
+            "$ref" : "#/components/schemas/commitmentStatus"
+          },
+          "statusService" : {
+            "$ref" : "#/components/schemas/statusService"
+          },
+          "managementCommitmentService" : {
+            "$ref" : "#/components/schemas/managementEngagementService"
+          },
+          "statusMoa" : {
+            "$ref" : "#/components/schemas/statusMoa"
+          },
+          "statusMoaUnique" : {
+            "$ref" : "#/components/schemas/statutMoaUnique"
+          },
+          "managementPaymentStatus" : {
+            "$ref" : "#/components/schemas/gestionStatutMisePaiement"
+          }
+        },
+        "required" : [ "codeLigneAdressage", "raisonSocialeDestinataire", "sirenDestinataire", "typeEntiteDestinataire" ],
+        "title" : "ligneAdressagePayload",
+        "type" : "object"
+      },
+      "updateLigneAdressageBody" : {
+        "properties" : {
+          "codeLigneAdressage" : {
+            "$ref" : "#/components/schemas/codeRouting"
+          },
+          "dateApplicationLineAddressage" : {
+            "$ref" : "#/components/schemas/dateApplication"
+          },
+          "statusBillingLine" : {
+            "$ref" : "#/components/schemas/invoicingLineStatus"
+          }
+        },
+        "required" : [ "codeLigneAdressage", "dateApplicationLigneAdressage", "statusLigneFacturation" ],
+        "title" : "UpdateLigneAdressageBody",
+        "type" : "object"
+      },
+      "where" : {
+        "description": "Criteria for multi-criteria search",
+        "example" : "A:100 AND B:200 OR C:150 (syntax to be defined)",
+        "type" : "string
+      },
+      "sort" : {
+        "description": "Allows you to sort the list of elements returned",
+        "example" : "[+A,-B]",
+        "items" : {
+          "example" : "+A",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "fields" : {
+        "description" : "Allows you to filter the desired fields in the response as described in [Rule #157](https://opensource.zalando.com/restful-api-guidelines/#157)\n",
+        "example" : "[number, status]",
+        "items" : {
+          "example" : "numero",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "limit" : {
+        "description" : "Limit the number of results",
+        "example" : 50,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "offset" : {
+        "description" : "Number of results to ignore",
+        "example" : 20,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "uniteLegalePayload" : {
+        "properties" : {
+          "todo" : {
+            "$ref" : "#/components/schemas/todo"
+          },
+          "siren" : {
+            "$ref" : "#/components/schemas/siren"
+          },
+          "raisonSociale" : {
+            "$ref" : "#/components/schemas/corporateNameRecipient"
+          },
+          "typeEntite" : {
+            "$ref" : "#/components/schemas/typeEntiteDestinataire"
+          },
+          "siret" : {
+            "$ref" : "#/components/schemas/siret"
+          },
+          "libelleAdresse1" : {
+            "$ref" : "#/components/schemas/addressname1Recipient"
+          },
+          "libelleAdresse2" : {
+            "$ref" : "#/components/schemas/libelleAdresse2Destinataire"
+          },
+          "libelleAdresse3" : {
+            "$ref" : "#/components/schemas/libelleAdresse3Destinataire"
+          },
+          "postcode" : {
+            "$ref" : "#/components/schemas/postcodeAddressee"
+          },
+          "libelleCommune" : {
+            "$ref" : "#/components/schemas/communeNameAddressee" }, "libelleCommune" : {
+          },
+          "libellePays" : {
+            "$ref" : "#/components/schemas/libellePaysDestinataire"
+          }
+        },
+        "title" : "uniteLegalePayload",
+        "type" : "object"
+      },
+      "etablissementPayload" : {
+        "properties" : {
+          "todo" : {
+            "$ref" : "#/components/schemas/todo"
+          },
+          "siret" : {
+            "$ref" : "#/components/schemas/siret"
+          },
+          "libelleAdresse1" : {
+            "$ref" : "#/components/schemas/addressname1Recipient"
+          },
+          "libelleAdresse2" : {
+            "$ref" : "#/components/schemas/libelleAdresse2Destinataire"
+          },
+          "libelleAdresse3" : {
+            "$ref" : "#/components/schemas/libelleAdresse3Destinataire"
+          },
+          "postcode" : {
+            "$ref" : "#/components/schemas/postcodeAddressee"
+          },
+          "libelleCommune" : {
+            "$ref" : "#/components/schemas/communeNameAddressee" }, "libelleCommune" : {
+          },
+          "libellePays" : {
+            "$ref" : "#/components/schemas/libellePaysDestinataire"
+          }
+        },
+        "title" : "etablissementPayload",
+        "type" : "object"
+      },
+      "createCodeRoutageBody" : {
+        "properties" : {
+          "todo" : {
+            "$ref" : "#/components/schemas/todo"
+          },
+          "dateApplication" : {
+            "$ref" : "#/components/schemas/dateApplication"
+          },
+          "statusInvoiceLine" : {
+            "$ref" : "#/components/schemas/invoicingLineStatus"
+          },
+          "codeStructureSiren" : {
+            "$ref" : "#/components/schemas/siren"
+          },
+          "codeStructureSiret" : {
+            "$ref" : "#/components/schemas/siret"
+          },
+          "codeStructureRoutingCode" : {
+            "$ref" : "#/components/schemas/codeRoutage"
+          },
+          "dateStartContract" : {
+            "$ref" : "#/components/schemas/contractStartDate"
+          },
+          "dateEndContract" : {
+            "$ref" : "#/components/schemas/dateEndContract"
+          },
+          "immatPlatform" : {
+            "$ref" : "#/components/schemas/immatPlatform"
+          }
+        },
+        "required" : [ "dateApplication", "dateStartContract", "dateEndContract", "immatPlatform", "statusInvoicingLine" ],
+        "title" : "CreateLigneAdressageBody",
+        "type": "object
+      },
+      "idRoutingCode" : {
+        "description": "Routing code identifier",
+        "example" : "dcsc456sdcsdcs556",
+        "maxLength" : 125,
+        "type" : "string"
+      },
+      "codeRoutagePayload" : {
+        "properties" : {
+          "todo" : {
+            "$ref" : "#/components/schemas/todo"
+          },
+          "codeLigneAdressage" : {
+            "$ref" : "#/components/schemas/codeLigneAdressage"
+          },
+          "recipientSiren" : {
+            "$ref" : "#/components/schemas/sirenDestinataire"
+          },
+          "recipientSocietyName" : {
+            "$ref" : "#/components/schemas/recipientSurname" }, "recipientSocietyName" : {
+          },
+          "typeEntiteDestinataire" : {
+            "$ref" : "#/components/schemas/typeEntiteDestinataire"
+          },
+          "siretDestinataire" : {
+            "$ref" : "#/components/schemas/siretDestinataire"
+          },
+          "libelleAdresse1Destinataire" : {
+            "$ref" : "#/components/schemas/addressBooklet1Addressee"
+          },
+          "libelleAdresse2Destinataire" : {
+            "$ref" : "#/components/schemas/libelleAdresse2Destinataire"
+          },
+          "libelleAdresse3Destinataire" : {
+            "$ref" : "#/components/schemas/libelleAdresse3Destinataire"
+          },
+          "recipientPostCode" : {
+            "$ref" : "#/components/schemas/codePostalDestinataire"
+          },
+          "libelleCommuneDestinataire" : {
+            "$ref" : "#/components/schemas/communeAddresseeName"
+          },
+          "libellePaysDestinataire" : {
+            "$ref" : "#/components/schemas/libellePaysDestinataire"
+          },
+          "recipientRoutingCode" : {
+            "$ref" : "#/components/schemas/codeRoutageDestinataire"
+          },
+          "libelleCodeRoutageDestinataire" : {
+            "$ref" : "#/components/schemas/recipientRoutingCode" label
+          },
+          "typeCodeRoutageDestinataire" : {
+            "$ref" : "#/components/schemas/typeCodeRoutingDestinataire"
+          },
+          "typeRecipientPlatform" : {
+            "$ref" : "#/components/schemas/typeRecipientPlatform"
+          },
+          "recipientPlatformID" : {
+            "$ref" : "#/components/schemas/identifiantDestinatairePlateforme"
+          },
+          "platformName" : {
+            "$ref" : "#/components/schemas/PlatformCorporateName"
+          },
+          "platformStartDate" : {
+            "$ref" : "#/components/schemas/dateUtilisationPlateforme"
+          },
+          "datePlatformUseEnd" : {
+            "$ref" : "#/components/schemas/dateEndPlatformUse"
+          },
+          "statusCommitment" : {
+            "$ref" : "#/components/schemas/commitmentStatus"
+          },
+          "statusService" : {
+            "$ref" : "#/components/schemas/statusService"
+          },
+          "managementCommitmentService" : {
+            "$ref" : "#/components/schemas/gestionEngagementService"
+          },
+          "statusMoa" : {
+            "$ref" : "#/components/schemas/statusMoa"
+          },
+          "statusMoaUnique" : {
+            "$ref" : "#/components/schemas/statutMoaUnique"
+          },
+          "managementPaymentStatus" : {
+            "$ref" : "#/components/schemas/gestionStatutMisePaiement"
+          }
+        },
+        "required" : [ "codeLigneAdressage", "raisonSocialeDestinataire", "sirenDestinataire", "typeEntiteDestinataire" ],
+        "title" : "codeRoutagePayload",
+        "type" : "object"
+      },
+      "updateRoutingCodeBody" : {
+        "properties" : {
+          "todo" : {
+            "$ref" : "#/components/schemas/todo"
+          },
+          "codeRoutingCode" : {
+            "$ref" : "#/components/schemas/codeRoutingRecipient"
+          },
+          "routingcode label" : {
+            "$ref" : "#/components/schemas/addresseeRoutingCodeLabel"
+          },
+          "typeRoutingCode" : {
+            "$ref" : "#/components/schemas/typeRoutingCodeRecipient"
+          }
+        },
+        "title" : "UpdateCodeRoutageBody",
+        "type" : "object"
+      },
+      "dateApplication" : {
+        "description" : "Corresponds to the date of application of the returned addressing line",
+        "example" : "2023-01-01",
+        "format" : "date",
+        "type" : "string"
+      },
+      "statusBillingLine" : {
+        "description": "Corresponds to the status of the address line being searched for",
+        "example": "inactive",
+        "maxLength" : 7,
+        "type": "string
+      },
+      "siren" : {
+        "description" : "Corresponds to the SIREN number of the address line returned.",
+        "example" : "702042755",
+        "maxLength" : 9,
+        "minLength" : 9,
+        "type" : "string
+      },
+      "siret" : {
+        "description": "Corresponds to the SIRET number of the returned address line,
+        "example" : "70204275500240",
+        "maxLength" : 14,
+        "minLength" : 14,
+        "type" : "string
+      },
+      "routingCode" : {
+        "description" : "Corresponds to the routing code of the returned addressing line ,
+        "example" : "dcsc456sdcsdcs556",
+        "type" : "string"
+      },
+      "dateStartContract" : {
+        "description" : "Corresponds to the contract validity start date of the returned addressing line.",
+        "example" : "2023-01-01",
+        "format" : "date",
+        "type" : "string
+      },
+      "dateEndContract" : {
+        "description" : "Corresponds to the end of validity date of the contract for the returned addressing line",
+        "example" : "2023-01-01",
+        "format" : "date",
+        "type" : "string
+      },
+      "immatPlatform" : {
+        "description" : "Corresponds to the platform registration number",
+        "example" : "dcsc456sdcsdcs556",
+        "type" : "string"
+      },
+      "codeLigneAdressage" : {
+        "description": "Corresponds to the addressing line code of the returned addressing line ,
+        "example" : "dcsc456sdcsdcs556",
+        "type" : "string
+      },
+      "recipientSiren" : {
+        "description" : "Corresponds to the SIREN number of the returned address line.",
+        "example" : "702042755",
+        "maxLength" : 9,
+        "minLength" : 9,
+        "type" : "string
+      },
+      "recipientCompanyName" : {
+        "description": "Corresponds to the company name of the recipient structure that defined the returned address line,
+        "example": "Boulangerie Pascale",
+        "maxLength" : 100,
+        "type": "string
+      },
+      "typeEntiteDestinataire" : {
+        "description": "Corresponds to the type of recipient structure that defined the returned address line,
+        "example" : "INC",
+        "maxLength" : 4,
+        "type" : "string
+      },
+      "siretDestinataire" : {
+        "description": "Corresponds to the SIRET number of the address line returned. This attribute is only returned if the addressing line is defined in the SIREN / SIRET mesh or in the SIREN / SIRET / Routing Code mesh",
+        "example" : "70204275500240",
+        "maxLength" : 14,
+        "minLength" : 14,
+        "type" : "string"
+      },
+      "libelleAdresse1Destinataire" : {
+        "description": "Corresponds to the address of the recipient structure having defined the addressing line(s) searched for",
+        "example": "16 BIS RUE HENRI BARBUSSE",
+        "maxLength" : 150,
+        "type" : "string
+      },
+      "libelleAdresse2Destinataire" : {
+        "description": "Corresponds to the address of the recipient structure having defined the addressing line(s) searched for",
+        "example": "CEDEX 1",
+        "maxLength" : 38,
+        "type": "string
+      },
+      "libelleAdresse3Destinataire" : {
+        "description": "Corresponds to the address of the recipient structure having defined the addressing line(s) searched for",
+        "example": "Bâtiment le Callipso",
+        "maxLength" : 150,
+        "type" : "string"
+      },
+      "recipientPostCode" : {
+        "description": "Corresponds to the postcode of the recipient structure that defined the address line(s) searched for",
+        "example" : "38100",
+        "maxLength" : 5,
+        "type" : "string
+      },
+      "recipientCommuneName" : {
+        "description": "Corresponds to the municipality of the recipient structure having defined the addressing line(s) searched for",
+        "example": "Grenoble",
+        "maxLength" : 100,
+        "type" : "string"
+      },
+      "recipientCountryName" : {
+        "description": "Corresponds to the country of the recipient structure having defined the addressing line(s)",
+        "example" : "France",
+        "maxLength" : 100,
+        "type": "string
+      },
+      "recipientRoutingCode" : {
+        "description": "Corresponds to the routing code of the returned addressing line. This attribute is only returned if the addressing line is defined in the SIREN / SIRET / Routing Code grid.",
+        "example": "123",
+        "maxLength" : 10,
+        "type" : "string"
+      },
+      "addresseeRoutingCodeName" : {
+        "description": "Corresponds to the routing code label of the returned addressing line. This attribute is only returned if the addressing line is defined in the SIREN / SIRET / Routing Code grid.",
+        "example": "Routing code label",
+        "maxLength" : 100,
+        "type" : "string"
+      },
+      "typeCodeRoutageDestinataire" : {
+        "description": "Corresponds to the type of routing code of the returned addressing line. This attribute is only returned if the addressing line is defined in the SIREN / SIRET / Routing Code grid.",
+        "enum" : [ "GLN", "ODETTE", "Service interne", "Code privé" ],
+        "example" : "GLN",
+        "maxLength" : 10,
+        "type" : "string"
+      },
+      "typeRecipientPlatform" : {
+        "description" : "Corresponds to the platform type of the returned addressing line",
+        "enum" : [ "PDP", "PPF" ],
+        "example" : "PDP",
+        "maxLength" : 4,
+        "type" : "string"
+      },
+      "recipientPlatformID" : {
+        "description": "Corresponds to the platform registration number of the returned addressing line",
+        "example" : 150029,
+        "format" : "int64",
+        "type" : "integer"
+      },
+      "platformSurname" : {
+        "description" : "Corresponds to the corporate name of the platform of the returned addressing line",
+        "example" : "Platform company name",
+        "maxLength" : 100,
+        "type" : "string"
+      },
+      "platformStartDate" : {
+        "description" : "Corresponds to the start date of the validity of the contract between the recipient structure and the platform of the returned addressing line",
+        "example" : "2023-01-01",
+        "format" : "date",
+        "type" : "string"
+      },
+      "datePlatformUseEnd" : {
+        "description" : "Corresponds to the end date of validity of the contract between the recipient structure and the platform of the addressing line returned.",
+        "example" : "2023-01-01",
+        "format" : "date",
+        "type" : "string"
+      },
+      "engagementstatus" : {
+        "description": "Corresponds to the legal commitment management information. This attribute is only returned if the addressing line is defined for a public structure in the SIREN / SIRET or SIREN / SIRET / Routing Code grid.",
+        "example": true,
+        "type" : "boolean"
+      },
+      "serviceStatus" : {
+        "description": "Corresponds to the service management information. This attribute is only returned if the addressing line is defined for a public structure in the SIREN / SIRET or SIREN / SIRET / Routing Code grid.",
+        "example": true,
+        "type" : "boolean"
+      },
+      "managementEngagementService" : {
+        "description": "Corresponds to the legal commitment or service management information. This attribute is only returned if the addressing line is defined for a public structure in the SIREN / SIRET or SIREN / SIRET / Routing Code grid,
+        "example": true,
+        "type" : "boolean"
+      },
+      "statusMoa" : {
+        "description": "Indicates whether the public structure acts as project manager for works invoices in addition to receiving simple invoices. This attribute is only returned if the addressing line is defined for a public structure in the SIREN / SIRET or SIREN / SIRET / Routing Code grid.",
+        "example": true,
+        "type" : "boolean"
+      },
+      "statusMoaUnique" : {
+        "description": "Indicates whether the public structure only plays the role of project owner, if so it will only be able to receive invoices for works. This attribute is only returned if the addressing line is defined for a public structure in the SIREN / SIRET or SIREN / SIRET / Routing Code grid,
+        "example": true,
+        "type" : "boolean"
+      },
+      "gestionStatutMisePaiement" : {
+        "description": "Corresponds to information about the management of the payment status. This attribute is only returned if the addressing line is defined for a public structure in the SIREN / SIRET or SIREN / SIRET / Routing Code grid,
+        "example": true,
+        "type" : "boolean"
+      },
+      "todo" : {
+        "description": "Content to be defined",
+        "example" : "todo",
+        "type" : "string"
+      },
+      "createLigneAdressage_200_response" : {
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/idLigneAdressage"
+          }
+        },
+        "type" : "object"
+      },
+      "searchLigneAdressage_request" : {
+        "properties" : {
+          "where" : {
+            "$ref" : "#/components/schemas/where"
+          },
+          "sort" : {
+            "$ref" : "#/components/schemas/sort"
+          },
+          "fields" : {
+            "$ref" : "#/components/schemas/fields"
+          },
+          "limit" : {
+            "$ref" : "#/components/schemas/limit"
+          },
+          "offset" : {
+            "$ref" : "#/components/schemas/offset"
+          }
+        },
+        "type" : "object"
+      },
+      "createCodeRouting_200_response" : {
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/idCodeRoutage"
+          }
+        },
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "bearer_auth" : {
+        "bearerFormat" : "JWT",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}

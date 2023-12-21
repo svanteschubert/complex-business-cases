@@ -1,0 +1,603 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "contact" : {
+      "email" : "api@contact.name",
+      "name" : "api@contact.name"
+    },
+    "description" : "### Warnings The publication of swaggers makes it possible to set out precisely the interactions that will be possible using the PPF APIs.This is not a production version. These swaggers can be modified later (methods, endpoints).\n- The use of these swaggers will be possible as soon as an application is published on PISTE, which is not the case today.\The **document** API allows you to:>- Create a document associated with the user's organisation >- Perform multi-criteria searches on documents >- Update a document >- Delete a document The API resources are:\n>- **/document** : with methods for searching, creating and modifying documentsExample of call kinematics for creating a request:\n >- `POST /document` : *upload documents to the PPF* >- `POST /document/search` : *perform advanced searches on documents using customisable criteria*\n---\n### Disclaimer The publication of the swaggers makes it possible to set out precisely the interactions that will be possible using the PPF APIs.\n This is not a production version. These swaggers can be modified at a later date (methods, endpoints).\nThe use of these swaggers will be possible as soon as an application is published on PISTE, which is not the case today.\n---\n",
+    "title: "PPF Documents",
+    "version": "Increment 2 - Specs Ext 2.2",
+    "x-api-id" : "de55bf23-a03e-41f0-a1f7-f86d4044e8ec",
+    "x-audience" : "external-public"
+  },
+  "externalDocs" : {
+    "description" : "PPF v2.2 external specifications",
+    "url" : "https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/specification_externes_b2b/version_2-2_du_31_01_2023/spec_facturation_electronique_v2.2_31-01-2023.zip"
+  },
+  "servers" : [ {
+    "url" : "https://{environment}aife.economie.gouv.fr/ppf/e-invoicing/v1.0.0",
+    "variables" : {
+      "environment" : {
+        "default" : "env.dev.",
+        "enum" : [ "env.dev.", "env.int.", "env.rec.", "env.pre.prod.", "api." ]
+      }
+    }
+  } ],
+  "tags" : [ {
+    "description" : "Information on the status of the document area",
+    "name" : "healthcheck"
+  }, {
+    "description" : "Operations on documents",
+    "name" : "document"
+  } ],
+  "paths" : {
+    "/healthcheck" : {
+      "get" : {
+        "description" : "View details of e-invoicing status",
+        "operationId" : "getHealth",
+        "responses" : {
+          "200" : {
+            "description" : "The e-invoicing bubble is functional"
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "503" : {
+            "description": "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "health.read" ]
+        } ],
+        "summary" : "Consultation status",
+        "tags" : [ "healthcheck" ]
+      }
+    },
+    "/document" : {
+      "post" : {
+        "description" : "Adds a document to the document area",
+        "operationId" : "postDocument",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/document"
+              }
+            }
+          },
+          "description" : "A document to be uploaded to the PPF. It can be an invoice in UBL, CII or Factur-X format or a tar.gz archive containing several invoices in one of these formats: \application/ubl+xml - application/cii+xml - application/facturx+pdf - application/tar+gzip;content=ubl - application/tar+gzip;content=cii - application/tar+gzip;content=facturx - application/pdf - image/png - image/jpeg - text/csv - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet - application/vnd.oasis.opendocument.spreadsheet",
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postDocument202Reponse"
+                }
+              }
+            },
+            "description" : "The document is accepted, stored and waiting to be processed".
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or cannot be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "document.write" ]
+        } ],
+        "summary" : "Create a document",
+        "tags" : [ "document" ]
+      }
+    },
+    "/document/search" : {
+      "post" : {
+        "description" : "Multi-criteria search for a document among those associated with the user's organisation. Returns names, statuses, descriptions and their download link",
+        "operationId" : "postDocumentSearch",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/postDocumentSearchRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postDocumentResearchResponse"
+                }
+              }
+            },
+            "description" : "A paginated document response" }
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not succeed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "document.read", "document.write" ]
+        } ],
+        "summary" : "Search for a document",
+        "tags" : [ "document" ]
+      }
+    },
+    "/document/{id}" : {
+      "delete" : {
+        "description" : "Mark a document in the document space for deletion",
+        "operationId" : "deleteDocumentById",
+        "parameters" : [ {
+          "description" : "Technical identifier of the document in base",
+          "example" : "012345678912345",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Bad request. The request was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "document.write" ]
+        } ],
+        "summary" : "Deleting a document",
+        "tags" : [ "document" ]
+      },
+      "get" : {
+        "description" : "Returns the metadata for a document",
+        "operationId" : "getDocumentById",
+        "parameters" : [ {
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cf",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/getDocumentById200Reponse"
+                }
+              }
+            },
+            "description" : "The document metadata is returned in the response".
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "document.read" ]
+        } ],
+        "summary" : "Consultation of a document",
+        "tags" : [ "document" ]
+      }
+    },
+    "/document/{id}/download" : {
+      "get" : {
+        "description" : "Download a document by its identifier, in its original format",
+        "operationId" : "getDocumentTelechargementById",
+        "parameters" : [ {
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cf",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/ubl+xml" : { },
+              "application/cii+xml" : { },
+              "application/facturx+pdf" : { },
+              "application/tar+gzip;content=ubl" : { },
+              "application/tar+gzip;content=cii" : { },
+              "application/tar+gzip;content=facturx" : { },
+              "application/pdf" : { },
+              "image/png" : { },
+              "image/jpeg" : { },
+              "text/csv" : { },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : { },
+              "application/vnd.oasis.opendocument.spreadsheet" : { }
+            },
+            "description" : "The document is returned in the response".
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "document.read" ]
+        } ],
+        "summary" : "Download a document",
+        "tags" : [ "document" ]
+      }
+    }
+  },
+  "components" : {
+    "responses" : {
+      "internal_server_error" : {
+        "description" : "Internal server error."
+      },
+      "service_unavailable" : {
+        "description": "Service unavailable."
+      },
+      "bad_request" : {
+        "description": "Bad request. The request was invalid or could not be completed."
+      },
+      "unauthorized" : {
+        "description": "Unauthorised. The request requires user authentication."
+      },
+      "forbidden" : {
+        "description" : "Not authorised. The server has understood the request but refuses it or access is not authorised."
+      },
+      "not_found" : {
+        "description" : "Not found. There is no resource at the given URI."
+      },
+      "request_timeout" : {
+        "description": "Request timeout exceeded."
+      },
+      "unprocessable_entity" : {
+        "description": "Data validation error."
+      },
+      "too_many_requests" : {
+        "description": "The client has made too many calls in a given time period."
+      },
+      "not_implemented" : {
+        "description": "Not implemented."
+      }
+    },
+    "schemas" : {
+      "document" : {
+        "properties" : {
+          "referenceDocumentJustificatif" : {
+            "description" : "SupportingDocumentReference",
+            "example" : "FEI0047D",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "dateDepot" : {
+            "description" : "Document filing date",
+            "example" : "0018-04-24",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          },
+          "description" : {
+            "description": "Supporting document description",
+            "example": "screenshot of the supporting document",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "location" : {
+            "description": "External document location",
+            "example" : "/usr/foo/images/",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "piece" : {
+            "description" : "Attached document encoded in base 64",
+            "format" : "byte",
+            "type" : "string"
+          },
+          "codeMime" : {
+            "description" : "Attached document MIME codeAllowed Mime codes :- application/pdf\n - image/png\n - image/jpeg\n - text/csv\n - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n - application/vnd.oasis.opendocument.spreadsheet\n",
+            "example" : "image/jpeg",
+            "type" : "string"
+          },
+          "filename" : {
+            "description" : "fileName",
+            "example" : "justificatif.jpeg",
+            "maxLength" : 100,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "where" : {
+        "description" : "Criteria for multi-criteria search",
+        "example" : "A:100 AND B:200 OR C:150 (syntax to be defined)",
+        "type" : "string
+      },
+      "sort" : {
+        "description": "Allows you to sort the list of elements returned",
+        "example" : "[+A,-B]",
+        "items" : {
+          "example" : "+A",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "fields" : {
+        "description" : "Allows you to filter the desired fields in the response as described in [Rule #157](https://opensource.zalando.com/restful-api-guidelines/#157)\n",
+        "example" : "[number, status]",
+        "items" : {
+          "example" : "numero",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "limit" : {
+        "description" : "Limit the number of results",
+        "example" : 50,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "offset" : {
+        "description" : "Number of results to ignore",
+        "example" : 20,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "paginatedResponse" : {
+        "properties" : {
+          "items" : {
+            "description" : "Table containing the items found.",
+            "items" : { },
+            "type" : "array"
+          }
+        },
+        "required" : [ "items" ],
+        "type" : "object"
+      },
+      "documentMetadata" : {
+        "properties" : {
+          "referenceDocumentJustificatif" : {
+            "description" : "SupportingDocumentReference",
+            "example" : "FEI0047D",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "dateDepot" : {
+            "description" : "Document filing date",
+            "example" : "0018-04-24",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          },
+          "description" : {
+            "description": "Supporting document description",
+            "example": "screenshot of the supporting document",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "location" : {
+            "description" : "External document location",
+            "example" : "/usr/foo/images",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "codeMime" : {
+            "description" : "MIME code of the attached documentAllowed Mime codes :- application/pdf\n - image/png\n - image/jpeg\n - text/csv\n - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n - application/vnd.oasis.opendocument.spreadsheet\n",
+            "example" : "image/jpeg",
+            "type" : "string"
+          },
+          "filename" : {
+            "description" : "fileName",
+            "example" : "justificatif.jpeg",
+            "maxLength" : 100,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "postDocument202Response" : {
+        "properties" : {
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "required" : [ "id" ],
+        "title" : "postDocument202Response",
+        "type" : "object"
+      },
+      "postDocumentResearchRequest" : {
+        "properties" : {
+          "where" : {
+            "$ref" : "#/components/schemas/where"
+          },
+          "sort" : {
+            "$ref" : "#/components/schemas/sort"
+          },
+          "fields" : {
+            "$ref" : "#/components/schemas/fields"
+          },
+          "limit" : {
+            "$ref" : "#/components/schemas/limit"
+          },
+          "offset" : {
+            "$ref" : "#/components/schemas/offset"
+          }
+        },
+        "title" : "postDocumentSearchRequest",
+        "type" : "object"
+      },
+      "postDocumentSearchResponse" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/reponsePaginee"
+        } ],
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/document"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "items" ],
+        "title" : "postDocumentSearchResponse",
+        "type" : "object"
+      },
+      "getDocumentById200Reponse" : {
+        "properties" : {
+          "document" : {
+            "$ref" : "#/components/schemas/documentMetadonnees"
+          }
+        },
+        "title" : "getDocumentById200Reponse",
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "bearer_auth" : {
+        "bearerFormat" : "JWT",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}

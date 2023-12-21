@@ -1,0 +1,1966 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "contact" : {
+      "email" : "api@contact.name",
+      "name" : "api@contact.name"
+    },
+    "description" : "### Warnings The publication of swaggers makes it possible to set out precisely the interactions that will be possible using the PPF APIs.This is not a production version. These swaggers can be modified later (methods, endpoints).\n- The use of these swaggers will be possible as soon as an application is published on PISTE, which is not the case today.\The invoice API allows :\n >- to carry out multi-criteria searches on invoices integrated into the PPF\n >- to submit an invoice based on its data\n >- to view the readability of an invoice (PDF or Factur-X format)\n >- to retrieve invoice data and its attachments>- Add attachments to an invoice >- Add a lifecycle to an invoice from its data >- Retrieve the status history of an invoice The API resources are :>- **/invoice**: with methods for searching, creating, consulting and updating an invoiceExample of call kinematics for creating a request:>- `POST /invoice` : *Create an invoice in the PPF from its data >- `GET /invoice/search` : *Perform advanced invoice searches using customisable criteria",
+    "title: "PPF e-invoicing",
+    "version": "Increment 2 - Specs Ext 2.2",
+    "x-api-id": "de55bf23-a03e-41f0-a1f7-f86d4044e8ec",
+    "x-audience" : "external-public"
+  },
+  "externalDocs" : {
+    "description" : "PPF v2.2 external specifications",
+    "url" : "https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/specification_externes_b2b/version_2-2_du_31_01_2023/spec_facturation_electronique_v2.2_31-01-2023.zip"
+  },
+  "servers" : [ {
+    "url" : "https://{environment}aife.economie.gouv.fr/ppf/e-invoicing/v1.0.0",
+    "variables" : {
+      "environment" : {
+        "default" : "env.dev.",
+        "enum" : [ "env.dev.", "env.int.", "env.rec.", "env.pre.prod.", "api." ]
+      }
+    }
+  } ],
+  "tags" : [ {
+    "description" : "e-invoicing status information",
+    "name" : "healthcheck"
+  }, {
+    "description" : "Invoice operations (Flow 2)",
+    "name" : "invoice"
+  } ],
+  "paths" : {
+    "/healthcheck" : {
+      "get" : {
+        "description" : "View details of e-invoicing status",
+        "operationId" : "getHealth",
+        "responses" : {
+          "200" : {
+            "description" : "The e-invoicing bubble is functional"
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "503" : {
+            "description": "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "health.read" ]
+        } ],
+        "summary" : "Consultation status e-invoicing",
+        "tags" : [ "healthcheck" ]
+      }
+    },
+    "/invoice" : {
+      "post" : {
+        "description" : "Creation of an invoice from its data in JSON format and its attachments or from its data in structured format (UBL, CII, Factur-X)Return the identifier of the invoice created",
+        "operationId" : "postFacture",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/invoice"
+              }
+            }
+          },
+          "description" : "Invoice data",
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postInvoiceResponse201"
+                }
+              }
+            },
+            "description" : "The invoice is saved in the database and its identifier is returned".
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "invoice.write" ]
+        } ],
+        "summary" : "Create an invoice",
+        "tags" : [ "facture" ]
+      }
+    },
+    "/invoice/search" : {
+      "post" : {
+        "description" : "Multi-criteria search for invoicesReturns invoice identifiers, data on these invoices and statuses,
+        "operationId" : "postInvoiceSearch",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/postInvoiceSearchRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/postFactureResponseResearch200"
+                }
+              }
+            },
+            "description" : "A paginated response of the invoices found is returned".
+          },
+          "400" : {
+            "description": "Bad request. The query was invalid or could not be completed."
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "facture.read" ]
+        } ],
+        "summary" : "Invoice search",
+        "tags" : [ "invoice" ]
+      }
+    },
+    "/invoice/{id}" : {
+      "get" : {
+        "description" : "Returns the metadata and data for an invoice, including the current status of the invoice",
+        "operationId" : "getFactureById",
+        "parameters" : [ {
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cf",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/getFactureById200Response"
+                }
+              }
+            },
+            "description" : "Invoice data and current status are returned" }
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or cannot be completed.
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "facture.read" ]
+        } ],
+        "summary" : "Consultation of invoice data",
+        "tags" : [ "invoice" ]
+      }
+    },
+    "/invoice/{id}/download" : {
+      "get" : {
+        "description" : "Download an invoice in structured or readable format from its identifier",
+        "operationId" : "getFactureTelechargementById",
+        "parameters" : [ {
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cf",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "description" : "The accepted formats are application/cii+xml, application/ubl+xml, application/facturx+xml, application/pdf, origine.\nIf this parameter is not specified, it will be "origine" by default.\n",
+          "in" : "query",
+          "name" : "format",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/cii+xml" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "application/ubl+xml" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "application/facturx+xml" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "application/pdf" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              }
+            },
+            "description": "The invoice in the desired format".
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "facture.read" ]
+        } ],
+        "summary" : "Download an invoice",
+        "tags" : [ "invoice" ]
+      }
+    },
+    "/invoice/{id}/attachment" : {
+      "get" : {
+        "description" : "Returns the metadata for all the attachments to an invoice,
+        "operationId" : "getPJFacture",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/document_1"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Attachment metadata is returned"
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "facture.read", "facture.write" ]
+        } ],
+        "summary" : "View the metadata of an invoice's attachments",
+        "tags" : [ "invoice" ]
+      }
+    },
+    "/invoice/{id}/attachment/{idpj}" : {
+      "get" : {
+        "description" : "Download an attachment based on its identifier.\n",
+        "operationId" : "getPJFacturebyId",
+        "parameters" : [ {
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cf",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        }, {
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cg",
+          "in" : "path",
+          "name" : "idpj",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/png" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/jpeg" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/csv" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "application/vnd.oasis.opendocument.spreadsheet" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              }
+            },
+            "description": "The existing document has been attached to the invoice as an attachment".
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "facture.read" ]
+        } ],
+        "summary" : "Download an attachment in its original format",
+        "tags" : [ "invoice" ]
+      }
+    },
+    "/invoice/{id}/status" : {
+      "post" : {
+        "description" : "Causes the status of the invoice to be changed. An attachment can be added when the status is changed to certain statuses (completed)",
+        "operationId" : "postInvoiceStatus",
+        "parameters" : [ {
+          "description" : "Technical identifier of the invoice in base",
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cf",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/postFactureStatutRequete"
+              }
+            }
+          },
+          "description" : "Invoice data",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The status has been updated", "required" : true
+          },
+          "400" : {
+            "description" : "Bad request. The request was invalid or could not be completed.
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "facture.read" ]
+        } ],
+        "summary" : "Modification of invoice status",
+        "tags" : [ "invoice" ]
+      }
+    },
+    "/invoice/{id}/history-status" : {
+      "get" : {
+        "description" : "Returns the current status of an invoice or its history from a given date and/or up to a given date. If the dateStart and dateEnd parameters are not specified, then the entire history is returned,
+        "operationId" : "getFactureHistoryStatus",
+        "parameters" : [ {
+          "description" : "Technical identifier of the invoice in base",
+          "example" : "d93118fe-9965-4f13-96f3-f3e3ad37f0cf",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/statut"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Invoice status history" }
+          },
+          "400" : {
+            "description": "Bad request. The request was invalid or could not be completed".
+          },
+          "401" : {
+            "description": "Not authorised. The request requires user authentication."
+          },
+          "403" : {
+            "description": "Not authorised. The server has understood the request but refuses it or access is not authorised."
+          },
+          "404" : {
+            "description" : "Not found. There is no resource at the given URI."
+          },
+          "408" : {
+            "description": "Request timeout exceeded."
+          },
+          "422" : {
+            "description": "Data validation error."
+          },
+          "429" : {
+            "description": "The customer has made too many calls in a given time period."
+          },
+          "500" : {
+            "description": "Internal server error."
+          },
+          "501" : {
+            "description": "Not implemented."
+          },
+          "503" : {
+            "description" : "Service unavailable."
+          }
+        },
+        "security" : [ {
+          "bearer_auth" : [ "facture.read" ]
+        } ],
+        "summary" : "View invoice status history",
+        "tags" : [ "invoice" ]
+      }
+    }
+  },
+  "components" : {
+    "responses" : {
+      "internal_server_error" : {
+        "description" : "Internal server error."
+      },
+      "service_unavailable" : {
+        "description": "Service unavailable."
+      },
+      "bad_request" : {
+        "description": "Bad request. The request was invalid or could not be completed."
+      },
+      "unauthorized" : {
+        "description": "Unauthorised. The request requires user authentication."
+      },
+      "forbidden" : {
+        "description" : "Not authorised. The server has understood the request but refuses it or access is not authorised."
+      },
+      "not_found" : {
+        "description" : "Not found. There is no resource at the given URI."
+      },
+      "request_timeout" : {
+        "description": "Request timeout exceeded."
+      },
+      "unprocessable_entity" : {
+        "description": "Data validation error."
+      },
+      "too_many_requests" : {
+        "description": "The client has made too many calls in a given time period."
+      },
+      "not_implemented" : {
+        "description": "Not implemented."
+      }
+    },
+    "schemas" : {
+      "invoice" : {
+        "format" : "object",
+        "properties" : {
+          "invoicenumber" : {
+            "description" : "Invoice number",
+            "example" : "UC-123",
+            "maxLength" : 20,
+            "type" : "string"
+          },
+          "dateEmission" : {
+            "description" : "Issue date initial invoice / amending invoice",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type": "string"
+          },
+          "codeType" : {
+            "description": "Invoice type code",
+            "example" : "24",
+            "maxLength" : 3,
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 1001
+          },
+          "currencycode" : {
+            "description" : "Invoice currency code",
+            "example" : "EUR",
+            "maxLength" : 3,
+            "type" : "string",
+            "x-codelist-type" : "ISO",
+            "x-codelist-value" : 4217
+          },
+          "codeDeviseTva" : {
+            "description" : "VAT accounting currency code",
+            "example" : "EUR",
+            "maxLength" : 3,
+            "type" : "string",
+            "x-codelist-type" : "ISO",
+            "x-codelist-value" : 4217
+          },
+          "dateExigibiliteTva" : {
+            "description" : "Value added tax liability date",
+            "example" : "2023-06-22",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          },
+          "codeDateExigibiliteTva" : {
+            "description": "Value added tax liability date code",
+            "example" : "150",
+            "maxLength" : 2,
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 2005
+          },
+          "dateEcheance" : {
+            "description" : "due date",
+            "example" : "2023-06-22",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          },
+          "referenceBuyer" : {
+            "description" : "buyer reference",
+            "example" : "TEVHJT5432",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "referenceProjet" : {
+            "description" : "ProjectReference",
+            "example" : "TEVHJT5432",
+            "maxLength" : 50,
+            "type" : "string
+          },
+          "referenceContract" : {
+            "description" : "Contract reference",
+            "example" : "TEVHJT5432",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "referenceOrderBond" : {
+            "description" : "purchase order reference",
+            "example" : "TEVHJT5432",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "salesOrderNumber" : {
+            "description" : "Sales order number",
+            "example" : "TEVHJT5432",
+            "maxLength" : 50,
+            "type" : "string
+          },
+          "referenceAvisReception" : {
+            "description" : "Receipt Advice Reference",
+            "example" : "TEVHJT5432",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "referenceAvisExpedition" : {
+            "description" : "Shipping Advice Reference",
+            "example" : "TEVHJT5432",
+            "maxLength" : 50,
+            "type" : "string
+          },
+          "referenceOfferCall" : {
+            "description" : "Reference of the call for tender or lot",
+            "example" : "TEVHJT5432",
+            "maxLength" : 50,
+            "type" : "string
+          },
+          "identifiantObjetFacture" : {
+            "description" : "Invoiced object identifier",
+            "example" : "TEVHJT5432",
+            "type" : "string"
+          },
+          "identifierSchema" : {
+            "description" : "Schema identifier",
+            "example" : "AEF",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 1153
+          },
+          "referenceAccountantBuyer" : {
+            "description" : "Buyer accounting reference",
+            "example" : "TEVHJT5432",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "paymentcondition" : {
+            "description" : "Payment conditions",
+            "example" : "TEVHJT5432",
+            "maxLength" : 1024,
+            "type" : "string"
+          },
+          "invoiceNote" : {
+            "items" : {
+              "$ref" : "#/components/schemas/invoiceNote"
+            },
+            "type" : "array"
+          },
+          "processControl" : {
+            "$ref" : "#/components/schemas/processcontrol" }, "type" : "array", "processcontrol" : {
+          },
+          "referenceToAnInvoicePrevious" : {
+            "items" : {
+              "$ref" : "#/components/schemas/referenceAneFactureAnterieure"
+            },
+            "type" : "array"
+          },
+          "seller" : {
+            "$ref" : "#/components/schemas/actor"
+          },
+          "buyer" : {
+            "$ref" : "#/components/schemas/actor"
+          },
+          "beneficiary" : {
+            "$ref" : "#/components/schemas/beneficiary"
+          },
+          "taxrepresentativeofseller" : {
+            "$ref" : "#/components/schemas/representantFiscalDuVendeur"
+          },
+          "servicePresentationDeliveryInformation" : {
+            "$ref" : "#/components/schemas/servicedeliveryinformation"
+          },
+          "billingperiod" : {
+            "$ref" : "#/components/schemas/invoicingperiod"
+          },
+          "deliveryServicePeriod" : {
+            "$ref" : "#/components/schemas/postaladdress"
+          },
+          "paymentinstructions" : {
+            "$ref" : "#/components/schemas/paymentinstructions"
+          },
+          "resetToDocumentLevel" : {
+            "items" : {
+              "$ref" : "#/components/schemas/remiseOuCharge"
+            },
+            "title" : "Tableaux de remiseAuNiveauDocument",
+            "type" : "array"
+          },
+          "chargesOuChargeAtDocumentLevel" : {
+            "items" : {
+              "$ref" : "#/components/schemas/remiseOuCharge"
+            },
+            "type" : "array"
+          },
+          "documentTotals" : {
+            "$ref" : "#/components/schemas/documentTotals"
+          },
+          "vatbreakdown" : {
+            "items" : {
+              "$ref" : "#/components/schemas/ventilationDeLaTva"
+            },
+            "title" : "Table de ventilationDeLaTva",
+            "type" : "array"
+          },
+          "additionalsupportingdocuments" : {
+            "items" : {
+              "$ref" : "#/components/schemas/document"
+            },
+            "type" : "array"
+          },
+          "invoiceline" : {
+            "items" : {
+              "$ref" : "#/components/schemas/invoiceline"
+            },
+            "title" : "InvoiceLine table",
+            "type" : "array"
+          }
+        },
+        "required" : [ "buyer", "invoiceCode", "invoiceTypeCode", "processControl", "issueDate", "invoiceLine", "invoiceNumber", "documentTotals", "seller", "VATDistribution" ],
+        "type : "object
+      },
+      "where" : {
+        "description" : "Criteria for multi-criteria search",
+        "example" : "A:100 AND B:200 OR C:150 (syntax to be defined)",
+        "type" : "string
+      },
+      "sort" : {
+        "description": "Allows you to sort the list of elements returned",
+        "example" : "[+A,-B]",
+        "items" : {
+          "example" : "+A",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "fields" : {
+        "description" : "Allows you to filter the desired fields in the response as described in [Rule #157](https://opensource.zalando.com/restful-api-guidelines/#157)\n",
+        "example" : "[number, status]",
+        "items" : {
+          "example" : "numero",
+          "type" : "string"
+        },
+        "type" : "array"
+      },
+      "limit" : {
+        "description" : "Limit the number of results",
+        "example" : 50,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "offset" : {
+        "description" : "Number of results to ignore",
+        "example" : 20,
+        "format" : "int32",
+        "type" : "integer"
+      },
+      "paginatedResponse" : {
+        "properties" : {
+          "items" : {
+            "description" : "Table containing the items found.",
+            "items" : { },
+            "type" : "array"
+          }
+        },
+        "required" : [ "items" ],
+        "type" : "object"
+      },
+      "status" : {
+        "properties" : {
+          "code" : {
+            "description" : "code identifying the status",
+            "type" : "string"
+          },
+          "channel" : {
+            "description": "status reception channel (API/Portal/EDI)",
+            "type" : "string"
+          },
+          "userOrigin" : {
+            "$ref" : "#/components/schemas/userOrigin"
+          },
+          "reason" : {
+            "description": "reason for status change",
+            "type" : "string"
+          }
+        },
+        "title" : "status",
+        "type" : "object"
+      },
+      "invoiceNote" : {
+        "properties" : {
+          "noteSubjectCode" : {
+            "description" : "InvoiceNoteSubjectCode",
+            "example" : "ABZ",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 4551
+          },
+          "invoice note" : {
+            "description" : "Invoice Note",
+            "example" : "Neglegentis iudicarent ad praecurrit haberet.",
+            "maxLength" : 1024,
+            "type" : "string"
+          }
+        },
+        "required" : [ "noteFacture" ],
+        "type" : "object"
+      },
+      "referenceAneFactureAnterior" : {
+        "properties" : {
+          "referencePreviousInvoice" : {
+            "description" : "Reference to a previous invoice",
+            "example" : "TGHED765",
+            "maxLength" : 20,
+            "type" : "string"
+          },
+          "dateEmissionFactureAnterieure" : {
+            "description" : "Previous invoice issue date",
+            "example" : "2023-06-22",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          }
+        },
+        "required" : [ "referenceFactureAnterior" ],
+        "type" : "object"
+      },
+      "actor" : {
+        "properties" : {
+          "companyName" : {
+            "description" : "actor's company name",
+            "example" : "company name",
+            "maxLength" : 99,
+            "type" : "string
+          },
+          "tradeName" : {
+            "description" : "actor's trade name",
+            "example" : "trade name",
+            "maxLength" : 99,
+            "type" : "string"
+          },
+          "identifierPrive" : {
+            "items" : {
+              "$ref" : "#/components/schemas/identifiantPrive"
+            },
+            "title" : "Private identifier array",
+            "type" : "array"
+          },
+          "identifierSiret" : {
+            "description": "Actor identifier (SIRET)",
+            "example" : "1235689410056",
+            "maxLength" : 14,
+            "type" : "string"
+          },
+          "identifierSchemaSiret" : {
+            "description" : "Schema identifier (SIRET)",
+            "example" : "01234",
+            "maxLength" : 5,
+            "type" : "string"
+          },
+          "codeService" : {
+            "description" : "Actor identifier (routing code)",
+            "example" : "235",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "identifierSchemaCodeService" : {
+            "description" : "Schema identifier (Routing Code)",
+            "example" : "01234",
+            "maxLength" : 5,
+            "type" : "string
+          },
+          "numeroSiren" : {
+            "description" : "SIREN number",
+            "example" : "362521879",
+            "maxLength" : 9,
+            "type" : "string"
+          },
+          "identifierSchemaIdentifier" : {
+            "description" : "Schema identifier",
+            "example" : "01234",
+            "maxLength" : 5,
+            "type" : "string"
+          },
+          "qualifiantIdentifiantFiscal" : {
+            "description" : "Qualifier Tax identifier of the actor",
+            "example" : "1234",
+            "maxLength" : 4,
+            "type" : "string
+          },
+          "identifiantTva" : {
+            "description" : "Actor's VAT identifier",
+            "example" : "FRA",
+            "maxLength" : 15,
+            "type" : "string",
+            "x-codelist-type" : "ISO",
+            "x-codelist-value" : 3166
+          },
+          "email" : {
+            "description" : "actor's email address (billing address)",
+            "example" : "adresse@mail.com",
+            "maxLength" : 40,
+            "type" : "string
+          },
+          "emailid" : {
+            "description" : "Actor's email address schema identifier",
+            "example" : "12345",
+            "maxLength" : 5,
+            "type" : "string"
+          },
+          "legalform" : {
+            "description": "Identifier of the actor's e-mail address scheme",
+            "maxLength" : 1024,
+            "type" : "string"
+          },
+          "postaladdress" : {
+            "$ref" : "#/components/schemas/postaladdress"
+          },
+          "contact" : {
+            "$ref" : "#/components/schemas/contact"
+          }
+        },
+        "required" : [ "adressePostale", "identifiantEmail", "identifiantSchemaCodeService", "identifiantSchemaSiret", "qualifiantIdentifiantFiscal", "raisonSociale" ],
+        "type : "object
+      },
+      "postaladdress" : {
+        "properties" : {
+          "address1" : {
+            "description" : "Address - Line 1",
+            "example" : "7 rue des Fleurs",
+            "type" : "string"
+          },
+          "address2" : {
+            "description" : "Address - Line 2",
+            "example" : "appt 40",
+            "type" : "string"
+          },
+          "address3" : {
+            "description" : "Address - Line 3",
+            "example" : "residence des Fleurs",
+            "type" : "string"
+          },
+          "locality" : {
+            "description" : "Locality",
+            "example" : "Tours",
+            "type" : "string"
+          },
+          "cp" : {
+            "description" : "Postcode",
+            "example" : "37000",
+            "type" : "string"
+          },
+          "country" : {
+            "description" : "Subdivision of the country",
+            "example" : "France",
+            "type" : "string"
+          },
+          "countrycode" : {
+            "description" : "Country code",
+            "example" : "FR",
+            "type" : "string",
+            "x-codelist-type" : "ISO",
+            "x-codelist-value" : 3166
+          }
+        },
+        "required" : [ "countrycode" ]
+      },
+      "billingperiod" : {
+        "type" : "object"
+      },
+      "transfer" : {
+        "properties" : {
+          "paymentAccountID" : {
+            "description" : "Payment account identifier",
+            "example" : "FR12345678909876543",
+            "type" : "string"
+          },
+          "paymentAccountName" : {
+            "description": "Payment account name",
+            "example" : "Account",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "paymentprovideridentifier" : {
+            "description" : "Payment service provider identifier",
+            "example" : "The bank",
+            "type" : "string"
+          }
+        },
+        "required" : [ "paymentAccountID" ],
+        "type" : "object"
+      },
+      "paymentcardinformation" : {
+        "properties" : {
+          "primaryAccountNumber" : {
+            "description" : "Payment account identifier",
+            "example" : "FR234234234",
+            "type" : "string"
+          },
+          "holderName" : {
+            "description" : "Payment account name",
+            "example" : "Dupont",
+            "maxLength" : 100,
+            "type" : "string"
+          }
+        },
+        "required" : [ "numeroComptePrimaireCarte" ],
+        "type" : "object"
+      },
+      "prelevement" : {
+        "properties" : {
+          "mandateReferenceIdentifier" : {
+            "description" : "mandate reference identifier",
+            "example" : "123456",
+            "type" : "string"
+          },
+          "identifiantBancaireCreancier" : {
+            "description": "Creditor bank identifier",
+            "example" : "12345",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "debitAccountID" : {
+            "description" : "Debit account identifier (IBAN)",
+            "example" : "FR76301007941234567890185",
+            "type" : "string
+          }
+        },
+        "type" : "object"
+      },
+      "discountOuLoad" : {
+        "properties" : {
+          "amount" : {
+            "description" : "Amount of the discount or charge",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "base" : {
+            "description" : "Discount or charge base",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number
+          },
+          "percentage" : {
+            "description" : "Percentage discount or charge",
+            "example" : 3.4,
+            "format" : "float",
+            "type" : "number"
+          },
+          "vatTypeCode" : {
+            "description" : "VAT type code of the discount or charge",
+            "example" : "E",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 5305
+          },
+          "rateVAT" : {
+            "description" : "VAT rate of the discount or charge",
+            "example" : 20,
+            "format" : "float",
+            "type" : "number"
+          },
+          "reason" : {
+            "description" : "Reason for the discount or charge",
+            "example" : "Reason",
+            "maxLength" : 1024,
+            "type" : "string"
+          },
+          "reasoncode" : {
+            "description" : "Discount or charge reason code",
+            "example" : "E",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 5305
+          }
+        },
+        "required" : [ "codeTypeTva", "montant" ],
+        "type" : "object"
+      },
+      "document" : {
+        "properties" : {
+          "referenceDocumentJustificatif" : {
+            "description" : "SupportingDocumentReference",
+            "example" : "12345",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "dateDepot" : {
+            "description" : "Document filing date",
+            "example" : "2023-06-22",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          },
+          "description" : {
+            "description" : "Description of supporting document",
+            "example" : "description",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "location" : {
+            "description" : "External document location",
+            "example" : "location",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "piece" : {
+            "description" : "Attached document encoded in base 64",
+            "example" : "UW1sbGJpQnFiM1hEcVE9PQ==",
+            "format" : "byte",
+            "type" : "string"
+          },
+          "codeMime" : {
+            "description" : "MIME code of the attached documentAllowed Mime codes :- application/pdf\n - image/png\n - image/jpeg\n - text/csv\n - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n - application/vnd.oasis.opendocument.spreadsheet\n",
+            "example" : "application/pdf",
+            "type" : "string"
+          },
+          "filename" : {
+            "description" : "File name",
+            "example" : "FileName",
+            "maxLength" : 100,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "detailPrice" : {
+        "properties" : {
+          "priceNet" : {
+            "description" : "Item net price",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "discountPrice" : {
+            "description" : "Discount on the price of the item",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number
+          },
+          "priceGross" : {
+            "description" : "Item gross price",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "quantityBasePrice" : {
+            "description" : "Basic quantity of the item price",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number
+          },
+          "priceQuantityCode" : {
+            "description" : "Unit of measure code for the base quantity of the item price",
+            "example" : "19.2",
+            "type" : "string",
+            "x-codelist-type" : "EN16931",
+            "x-codelist-value" : "codelist"
+          }
+        },
+        "required" : [ "priceNet" ]
+      },
+      "informationSurLaTva" : {
+        "properties" : {
+          "vatTypeCode" : {
+            "description" : "VAT type code of the item invoiced",
+            "example" : "J",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 5305
+          },
+          "rateVAT" : {
+            "description" : "VAT rate of the invoiced item",
+            "example" : 20.4,
+            "format" : "float",
+            "type" : "number"
+          }
+        },
+        "required" : [ "codeTypeTva" ]
+      },
+      "informationSurArticle" : {
+        "properties" : {
+          "designation" : {
+            "description" : "item name",
+            "example" : "object",
+            "type" : "string"
+          },
+          "description" : {
+            "description" : "Description of the item",
+            "example": "object used for this",
+            "type" : "string"
+          },
+          "sellerID" : {
+            "description" : "Seller identifier for the item",
+            "example" : "123456",
+            "type" : "string"
+          },
+          "buyerid" : {
+            "description" : "Buyer identifier for the item",
+            "example" : "123456",
+            "type" : "string"
+          },
+          "identifierStandard" : {
+            "description" : "Standard identifier for the item",
+            "example" : "123456",
+            "type" : "string"
+          },
+          "standardSchemaIdentifier" : {
+            "description": "Schema identifier",
+            "example" : "PL",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 7143
+          },
+          "classId" : {
+            "$ref" : "#/components/schemas/classificationidentifier"
+          }
+        },
+        "required" : [ "designation", "identifierSchemaStandard" ]
+      },
+      "contact" : {
+        "properties" : {
+          "pointContact" : {
+            "description" : "Point of contact",
+            "example" : "Monsieur Dupont",
+            "maxLength" : 99,
+            "type" : "string"
+          },
+          "telephone" : {
+            "description" : "Contact telephone number",
+            "example" : "0612345678",
+            "maxLength" : 15,
+            "type" : "string"
+          },
+          "email" : {
+            "description" : "Contact email address",
+            "example" : "adresse@mail.com",
+            "format" : "mail",
+            "maxLength" : 50,
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "postInvoiceResponse201" : {
+        "properties" : {
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "required" : [ "id" ],
+        "title" : "postInvoiceResponse201",
+        "type" : "object"
+      },
+      "postFactureRequest" : {
+        "properties" : {
+          "where" : {
+            "$ref" : "#/components/schemas/where"
+          },
+          "sort" : {
+            "$ref" : "#/components/schemas/sort"
+          },
+          "fields" : {
+            "$ref" : "#/components/schemas/fields"
+          },
+          "limit" : {
+            "$ref" : "#/components/schemas/limit"
+          },
+          "offset" : {
+            "$ref" : "#/components/schemas/offset"
+          }
+        },
+        "title" : "postFactureResearchRequest",
+        "type" : "object"
+      },
+      "postFactureRechercheReponse200" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/reponsePaginee"
+        } ],
+        "properties" : {
+          "items" : {
+            "items" : {
+              "$ref" : "#/components/schemas/invoice"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "items" ],
+        "title" : "postFactureResponseResearch200",
+        "type" : "object"
+      },
+      "getFactureById200Response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/invoice"
+        } ],
+        "properties" : {
+          "status" : {
+            "$ref" : "#/components/schemas/status"
+          }
+        },
+        "title" : "getFactureById200Response",
+        "type" : "object"
+      },
+      "document_1" : {
+        "properties" : {
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          },
+          "codeMime" : {
+            "description" : "MIME code of the attached documentAllowed Mime codes :- application/pdf\n - image/png\n - image/jpeg\n - text/csv\n - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n - application/vnd.oasis.opendocument.spreadsheet\n",
+            "type" : "string
+          },
+          "filename" : {
+            "description" : "File name",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "supportingDocumentReference" : {
+            "description" : "Supporting document reference",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "dateDepot" : {
+            "description" : "Document filing date",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          },
+          "description" : {
+            "description": "Supporting document description",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "location" : {
+            "description" : "External document location",
+            "maxLength" : 100,
+            "type" : "string"
+          }
+        },
+        "title" : "document",
+        "type" : "object"
+      },
+      "postInvoiceStatusRequest" : {
+        "properties" : {
+          "statuscode" : {
+            "description" : "The target status code",
+            "type" : "string"
+          },
+          "reason" : {
+            "description": "A reason related to the status change",
+            "type" : "string"
+          },
+          "piece" : {
+            "description": "Attached document encoded in base 64",
+            "format" : "byte",
+            "type" : "string"
+          }
+        },
+        "required" : [ "codeStatut" ],
+        "title" : "postFactureStatutRequete",
+        "type" : "object"
+      },
+      "processControl" : {
+        "properties" : {
+          "typeProcess" : {
+            "description" : "Type of business process (billing framework)",
+            "example" : "AZE",
+            "maxLength" : 3,
+            "type" : "string"
+          },
+          "typeProfile" : {
+            "description" : "Profile type (e-invoicing, e-reporting, invoice etc.)",
+            "example": "e-invoicing",
+            "maxLength" : 255,
+            "type" : "string"
+          }
+        },
+        "required" : [ "typeProfile" ],
+        "title" : "controlProcess",
+        "type" : "object"
+      },
+      "beneficiary" : {
+        "properties" : {
+          "name" : {
+            "description" : "beneficiary name",
+            "example" : "Dupont",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "identifier" : {
+            "description" : "Beneficiary identifier",
+            "example" : "134123",
+            "type" : "string"
+          },
+          "identifierSchema" : {
+            "description" : "Schema identifier",
+            "example" : "0010",
+            "type" : "string",
+            "x-codelist-type" : "ISO",
+            "x-codelist-value" : 6523
+          },
+          "identifierLegal" : {
+            "description" : "Beneficiary's legal registration identifier",
+            "example" : "123",
+            "type" : "string"
+          },
+          "identifierSchemaIdentifier" : {
+            "description" : "Schema identifier",
+            "example" : "0009",
+            "type" : "string"
+          }
+        },
+        "required" : [ "name" ],
+        "title" : "beneficiary",
+        "type" : "object"
+      },
+      "representantFiscalDuVendeur" : {
+        "properties" : {
+          "name" : {
+            "description" : "Name of the seller's tax representative",
+            "example" : "Dupont",
+            "maxLength" : 255,
+            "type" : "string"
+          },
+          "identifiantTva" : {
+            "description" : "VAT identifier of the seller's fiscal representative",
+            "example" : "FR",
+            "maxLength" : 13,
+            "type" : "string",
+            "x-codelist-type" : "ISO",
+            "x-codelist-value" : 3166
+          },
+          "postaladdress" : {
+            "$ref" : "#/components/schemas/postaladdress"
+          }
+        },
+        "required" : [ "postaladdressofsalesperson'staxrepresentative", "salespersonvatidentifier", "salespersonrepresentativename" ],
+        "title" : "representantFiscalDuVendeur",
+        "type" : "object"
+      },
+      "deliveryServicePresentationInformation" : {
+        "properties" : {
+          "deliveryLocation" : {
+            "description" : "Delivered to",
+            "example" : "Delivered to",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "delivery address" : {
+            "description" : "Delivery establishment identifier",
+            "example" : "123123",
+            "maxLength" : 20,
+            "type" : "string"
+          },
+          "deliverySchemaID" : {
+            "description" : "Schema identifier",
+            "example" : "0009",
+            "type" : "string"
+          },
+          "deliveryPrestationDate" : {
+            "description": "Effective date of delivery / end of performance of the service",
+            "example" : "2023-06-22",
+            "format" : "date",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "type" : "string"
+          }
+        },
+        "title": "deliveryinformationServicePresentation",
+        "type" : "object"
+      },
+      "paymentinstructions" : {
+        "properties" : {
+          "averagecode" : {
+            "description" : "Payment method type code",
+            "example" : "62",
+            "maxLength" : 3,
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 4661
+          },
+          "libelleMoyen" : {
+            "description" : "Payment method label",
+            "example" : "Bank card",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "notice" : {
+            "description" : "Payment Advice",
+            "example" : "Notice",
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "transfer" : {
+            "$ref" : "#/components/schemas/wire"
+          },
+          "paymentcardinformation" : {
+            "$ref" : "#/components/schemas/paymentcardinformation" }, "paymentcardinformation" : { "$ref" : "#/components/schemas/paymentcardinformation" }.
+          },
+          "prelevement" : {
+            "$ref" : "#/components/schemas/prelevement"
+          }
+        },
+        "required" : [ "codeMediumPayment" ],
+        "title" : "paymentinstructions",
+        "type" : "object"
+      },
+      "documentTotals" : {
+        "properties" : {
+          "sumNetLineAmount" : {
+            "description" : "Sum of invoice line net amounts",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number
+          },
+          "sumRemiseDocument" : {
+            "description" : "Sum of document discounts",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "sumDocumentLoad" : {
+            "description" : "Sum of charges or fees at document level",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number
+          },
+          "montantTotalFactureHorsVAT" : {
+            "description" : "Total invoice amount excluding VAT",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "amountTotalInvoiceVAT" : {
+            "description" : "Total VAT amount of the invoice",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "amountTotalVATInvoice" : {
+            "description" : "Total VAT amount of the invoice expressed (accounting currency)",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "amountTotalInvoiceWithVAT" : {
+            "description" : "Total amount of the Invoice, with VAT",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number
+          },
+          "amountPaid" : {
+            "description" : "Amount paid",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "roundedAmount" : {
+            "description" : "RoundedAmount",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "amountAPayer" : {
+            "description" : "Amount to pay",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          }
+        },
+        "required" : [ "montantAPayer", "montantTotalFactureAveVAT", "montantTotalFactureHorsVAT", "sommeMontantNetLigne" ],
+        "title" : "totauxDuDocument",
+        "type" : "object"
+      },
+      "vatbreakdown" : {
+        "properties" : {
+          "baseImpositionTva" : {
+            "description" : "VAT type tax base",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number
+          },
+          "amountTypeTva" : {
+            "description" : "VAT amount for each type of VAT",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "codeTypeTva" : {
+            "description" : "VAT type code",
+            "example" : "C",
+            "maxLength" : 2,
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 5305
+          },
+          "rateTypeTva" : {
+            "description" : "VAT type rate",
+            "example" : 20,
+            "format" : "float",
+            "type" : "number"
+          },
+          "reasonExonerationTva" : {
+            "description" : "VAT exemption reason",
+            "example" : "reason",
+            "maxLength" : 1024,
+            "type" : "string"
+          },
+          "codeMotifExonerationTva" : {
+            "description" : "VAT exemption reason code",
+            "example" : "0128",
+            "maxLength" : 30,
+            "type" : "string",
+            "x-codelist-type" : "EN16931",
+            "x-codelist-value" : "Codelists".
+          }
+        },
+        "required" : [ "baseImpositionTva", "codeTypeTva", "montantTypeTva" ],
+        "title" : "ventilationDeLaTva",
+        "type" : "object"
+      },
+      "note" : {
+        "properties" : {
+          "note" : {
+            "description" : "Invoice line note",
+            "example" : "note",
+            "maxLength" : 1024,
+            "type" : "string"
+          }
+        },
+        "title" : "note",
+        "type" : "object"
+      },
+      "invoiceline" : {
+        "properties" : {
+          "identifier" : {
+            "description" : "invoice line identifier",
+            "type" : "string"
+          },
+          "note" : {
+            "items" : {
+              "$ref" : "#/components/schemas/note"
+            },
+            "title" : "Invoice line note table",
+            "type" : "array"
+          },
+          "objectid" : {
+            "description": "Invoice line object identifier",
+            "example" : "id1235",
+            "maxLength" : 1024,
+            "type" : "string"
+          },
+          "identifierSchema" : {
+            "description" : "Schema identifier",
+            "example" : "ABW",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 1153
+          },
+          "quantityInvoice" : {
+            "description" : "Quantity invoiced",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "codeQuantiteFacture" : {
+            "description" : "Invoice quantity unit of measure code",
+            "example" : "0132",
+            "type" : "string",
+            "x-codelist-type" : "EN16931",
+            "x-codelist-value" : "Codelist"
+          },
+          "amountNetInvoice" : {
+            "description" : "Invoice line net amount",
+            "example" : 19.2,
+            "format" : "float",
+            "type" : "number"
+          },
+          "referenceOrderBill" : {
+            "description" : "Referenced purchase order line reference",
+            "example" : "12345678",
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "referenceAccountantBuyerInvoice" : {
+            "description" : "Accounting reference of the buyer of the invoice line",
+            "example" : "12345678",
+            "maxLength" : 50,
+            "type" : "string
+          },
+          "invoiceperiod" : {
+            "$ref" : "#/components/schemas/periodeDeFacturation"
+          },
+          "discount" : {
+            "$ref" : "#/components/schemas/discountOuCharge"
+          },
+          "chargeOuCharge" : {
+            "$ref" : "#/components/schemas/remiseOuCharge"
+          },
+          "detailPrice" : {
+            "$ref" : "#/components/schemas/priceDetail"
+          },
+          "informationOnVAT" : {
+            "$ref" : "#/components/schemas/informationSurLaTva"
+          },
+          "informationAboutArticle" : {
+            "$ref" : "#/components/schemas/informationSurArticle"
+          }
+        },
+        "required" : [ "codeQuantiteFactureLigne", "detailDuPrix", "identifierLigne", "informationSurArticle", "informationSurLaTva", "montantNetFactureLigne", "quantiteFactureLigne" ],
+        "title": "invoiceline",
+        "type" : "object"
+      },
+      "userOrigin" : {
+        "description": "User at the origin of the status change",
+        "properties" : {
+          "id" : {
+            "format" : "uuid",
+            "type" : "string"
+          }
+        },
+        "title" : "userOrigin",
+        "type" : "object"
+      },
+      "identifierPrive" : {
+        "properties" : {
+          "identifier" : {
+            "description" : "Actor's private identifier",
+            "example" : "544134",
+            "maxLength" : 80,
+            "type" : "string
+          },
+          "identifierSchema" : {
+            "description" : "Schema identifier",
+            "example" : "0009",
+            "maxLength" : 5,
+            "type" : "string"
+          }
+        },
+        "required" : [ "identifierSchema" ],
+        "title" : "identifiantPrive",
+        "type" : "object"
+      },
+      "attribute" : {
+        "properties" : {
+          "attributeName" : {
+            "description" : "Item attribute name",
+            "example" : "name",
+            "type" : "string"
+          },
+          "valueAttribute" : {
+            "description" : "Item attribute value",
+            "example" : "value",
+            "type" : "string"
+          }
+        },
+        "required" : [ "attributeName", "attributeValue" ],
+        "title" : "attribute",
+        "type" : "object"
+      },
+      "classId" : {
+        "properties" : {
+          "classificationIdentifier" : {
+            "description" : "Item classification identifier",
+            "example" : "12345",
+            "type" : "string"
+          },
+          "identifierSchemaClassification" : {
+            "description": "Schema identifier",
+            "example" : "BO",
+            "type" : "string",
+            "x-codelist-type" : "UNTDID",
+            "x-codelist-value" : 7143
+          },
+          "identifierVersionSchema" : {
+            "description": "Schema version identifier",
+            "example" : "2",
+            "type" : "string"
+          },
+          "attributes" : {
+            "items" : {
+              "$ref" : "#/components/schemas/attribute"
+            },
+            "title" : "Table of attributes",
+            "type" : "array"
+          }
+        },
+        "required" : [ "identifierSchemaClassification" ],
+        "title" : "identifierFromClassification",
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "bearer_auth" : {
+        "bearerFormat" : "JWT",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}
